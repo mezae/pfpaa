@@ -1,0 +1,49 @@
+
+<div class="modal-body">
+	<div class="row">
+		<button type="button" class="btn btn-sm btn-link pull-right closeModal badflag" ng-click="exitModal()">
+			<i class="glyphicon glyphicon-remove"></i>
+		</button>
+	</div>
+	<div class="row">
+		<div class="col-md-4 col-md-offset-4">
+			<img src="{{candidate.picture}}" alt="..." class="img-responsive">
+		</div>
+		<div class="col-md-12">
+			 <p>Name: {{candidate.name}}</p>
+			 <p>Contingent: {{candidate.contingent}}</p>
+			 <p>Bio: {{candidate.bio}}</p>
+			 <p>Statement: {{candidate.statement}}</p>
+		</div>
+	</div>
+
+</div>
+<div class="modal-footer">
+	<div class="row">
+	<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
+		<button type="button" class="btn btn-lg btn-link pull-left" ng-show="index > 0" ng-click="viewCandidate(-1)">
+			<i class="fa fa-chevron-left"></i>
+		</button>
+	</div>
+
+	<div class="col-md-4 col-sm-3 col-xs-4 text-center hidden-print">
+		<button class="btn btn-lg btn-link center-block" ng-click="deleteAgency(candidate)" ng-show="user.role !== 'user'">
+			<i class="fa fa-trash-o"></i>
+		</button>
+		<button class="btn btn-lg btn-save text-center" ng-click="updateBallot('add', candidate)" 
+			ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) < 0">
+			Vote for me!
+		</button>
+		<button class="btn btn-lg btn-cancel text-center" ng-click="updateBallot('remove', candidate)" 
+			ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) > -1">
+			Undo
+		</button>
+	</div>
+
+	<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
+		<button type="button" class="btn btn-lg btn-link" ng-show="index < max" ng-click="viewCandidate(1)">
+			<i class="fa fa-chevron-right"></i>
+		</button>
+	</div>
+	</div>
+</div>

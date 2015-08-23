@@ -1,0 +1,72 @@
+<div class="navbar navbar-static-top" data-ng-controller="HeaderController" ng-hide="isActive('/login')">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+				<a href="/#!/" class="navbar-brand"><img class="navbar-image" src="http://res.cloudinary.com/mezae/image/upload/c_scale,h_30/v1433431601/glogo_j8sfih.png"></a>
+
+				<button class="navbar-toggle btn btn-lg btn-link" ng-if="authentication.user" type="button" data-ng-click="toggleMenu($event)">
+					<span class="sr-only">Toggle navigation</span>
+					<i class="glyphicon glyphicon-menu-hamburger"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="nvg" ng-show="menuOpened">
+			<div class="navi main-menu">
+	            <ul>
+	                <li>
+	                    <a href="/#!/">
+	                        <i class="fa fa-home fa-2x"></i>
+	                        <span class="nav-text">
+	                            Home
+	                        </span>
+	                    </a>
+	                  
+	                </li>
+
+	                <li data-ng-show="isAdmin()">
+	                    <a href="/#!/voters">
+	                        <i class="fa fa-ticket fa-2x"></i>
+	                        <span class="nav-text">
+	                            Voter ID Generator
+	                        </span>
+	                    </a>
+	                  
+	                </li>
+
+	                <li data-ng-show="isAdmin()">
+						<a href="/#!/admin/stats">
+	                        <i class="fa fa-bar-chart-o fa-2x"></i>
+	                        <span class="nav-text">
+	                            Stats for Nerds
+	                        </span>
+	                    </a>
+	                </li>
+
+	                <li data-ng-show="isAdmin()">
+						<a href="/#!/admin/settings">
+	                       <i class="fa fa-cog fa-2x"></i>
+	                        <span class="nav-text">
+	                            Settings
+	                        </span>
+	                    </a>
+	                </li>
+
+	            </ul>
+
+	            <ul class="logout">
+	                <li>
+	                   <a href="/auth/signout">
+	                         <i class="fa fa-sign-out fa-2x"></i>
+	                        <span class="nav-text">
+	                            Logout
+	                        </span>
+	                    </a>
+	                </li>  
+	            </ul>
+	        </div>
+	    </div>
+
+	</div>
+</div>

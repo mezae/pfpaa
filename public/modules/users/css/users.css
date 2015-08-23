@@ -1,0 +1,21 @@
+@media (min-width: 992px) {
+	.nav-users {
+		position: fixed;
+	}
+}
+
+.login-box {
+	padding: 17vh 0;
+	float: none;
+	margin: auto;
+}
+
+.control-label {
+	font-size: 10px;
+	margin-bottom: 0;
+}
+
+.em-center {
+	float: none;
+	margin: auto;
+}

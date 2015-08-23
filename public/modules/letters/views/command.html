@@ -1,0 +1,68 @@
+
+<section class="page-wrap" data-ng-controller="CommandController" data-ng-init="find()">
+
+	<div class="row">
+
+		<div class="col-md-9 col-sm-9 col-xs-8">
+			<h2>Candidates</h2>
+		</div>
+
+		<div ng-show="user.role !== 'user'">
+			<div class="col-md-3 col-sm-3 col-xs-4 text-right hidden-print" ng-show="partners.length > 0 && !needToUpdate">
+				<button class="btn btn-lg btn-link" ng-click="showSidebar()">
+					<i class="fa fa-user-plus"></i>
+				</button>
+			</div>
+			<div class="col-md-3 col-sm-3 col-xs-4 text-right hidden-print" ng-show="needToUpdate">
+				<button class="btn btn-lg btn-link" ng-click="hideSidebar()">
+					<i class="fa fa-group"></i>
+				</button>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+	<div class="col-md-12 col-sm-12 col-xs-12">
+
+		<div class="row">
+			<div class="col-md-12">
+				<alert ng-show="alert.active" type="{{alert.type}}" ng-model="alert" close="alert.active = false">
+					{{alert.msg}}
+				</alert>
+
+				<progressbar class="progress-striped active" max="newUsers" value="partners.length - oldUsers" type="success" ng-if="(newUsers > 0 && partners.length - oldUsers < newUsers && partners.length - oldUsers > 1)" ng-hide="fileDone">
+					{{partners.length - oldUsers}}/{{newUsers}}
+				</progressbar>
+			</div>
+		</div>
+
+		<div class="row hidden-xs">
+		<!-- File Dropzone -->
+			<div class="col-md-12" ng-show="partners.length === 0 || needToUpdate">
+				<div ngf-select ngf-drop class="drop-box" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ngf-change="handleFileSelect($files)" ngf-accept="'application/vnd.ms-excel,text/csv'" accept="application/vnd.ms-excel,text/csv">
+					<p class="lead">drop csv file here or <br/>click to browse<p>
+			    </div>
+		    </div>
+		</div>
+
+		<div class="row" ng-show="!needToUpdate">
+			<div ng-repeat="cp in partners">
+			  <div class="col-sm-4 col-md-2">
+			    <div class="thumbnail">
+			      <img src="{{cp.picture}}" ng-click="showCandidate($index)" alt="...">
+			      <i class="fa fa-check fa-2x my-vote" ng-show="user.ballot.indexOf(cp._id) > -1"></i>
+			      <div class="caption">
+			        <h4 class="text-center cut-name">{{cp.name}}</h4>
+			        <p><a href="#" class="btn btn-upload center-block" role="button" ng-click="showCandidate($index)">View Profile</a></p>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+
+  </div>
+
+</section>
