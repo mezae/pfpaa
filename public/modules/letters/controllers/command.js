@@ -22,7 +22,6 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             
             Articles.query(function(users) {
                 $scope.partners = users;
-                socket.syncUpdates('users', $scope.partners);
             });
         };
 
@@ -77,7 +76,7 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
                 templateUrl: 'modules/letters/views/candidate.modal.html',
                 controller: 'CandidateModalCtrl',
                 backdrop: 'static',
-                size: 'md',
+                size: 'lg',
                 resolve: {
                     candidates: function() {
                         return {
@@ -166,53 +165,17 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             }
         };
 
-        //Allows user to add/update a partner
-        $scope.saveAgency = function() {
-            $scope.alert.active = false;
-            if ($scope.isNewAgency) {
-                if (_.find($scope.partners, {
-                    'username': $scope.partner.username
-                })) {
-                    $scope.alert = {
-                        active: true,
-                        type: 'danger',
-                        msg: $scope.partner.username + ' already exists. Please edit the existing copy to avoid duplicates.'
-                    };
-                } else {
-                    signup($scope.partner);
+        $scope.reviewBallot = function() {
+            var modal = $modal.open({
+                templateUrl: 'modules/letters/views/myBallot.modal.html',
+                controller: 'BallotModalCtrl',
+                backdrop: 'static',
+                resolve: {
+                    candidates: function() {
+                        return $scope.partners;
+                    }
                 }
-            } else {
-                Agencies.update($scope.partner);
-            }
-            $scope.hideSidebar();
+            });
         };
-
-
-        //Allow user to delete selected partner and all associated recipients
-        $scope.deleteAgency = function(selected) {
-            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.agency + '.');
-            if (confirmation === 'DELETE') {
-                $http.delete('/agency/' + selected.username);
-            }
-        };
-
-        //Show current state of partner that user wants to edit
-        $scope.showSidebar = function(selected) {
-            $scope.isNewAgency = selected ? false : true;
-            $scope.partner = selected;
-            $scope.needToUpdate = true;
-            $scope.startSearch = false;
-        };
-
-        $scope.hideSidebar = function() {
-            $scope.partner = null;
-            $scope.needToUpdate = false;
-            if ($scope.query.username || $scope.query.status) $scope.startSearch = true;
-        };
-
-        $scope.$on('$destroy', function() {
-            socket.unsyncUpdates('users');
-        });
-
     }
 ]);

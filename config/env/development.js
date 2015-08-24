@@ -3,10 +3,10 @@
 module.exports = {
     db: 'mongodb://localhost/pfpaa-dev',
     app: {
-        title: 'Winter Wishes - Development Environment'
+        title: 'Alumni Association Election - Development Environment'
     },
     mailer: {
-        from: 'The Winter Wishes Team <winterwishes@newyorkcares.org>',
+        from: 'Alumni Affairs <emeza@prepforprep.org>',
         options: {
             service: process.env.MAILER_SERVICE_PROVIDER,
             auth: {

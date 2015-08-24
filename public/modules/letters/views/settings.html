@@ -15,7 +15,7 @@
 					<i class="fa fa-calendar fa-2x"></i>
 				</div>
 				<p class="text-center">
-					Due Date
+					End Date
 				</p>
 			</div>
 		</div>
@@ -43,17 +43,6 @@
 		</div>
 
 		<div class="col-xs-6 col-sm-3 col-md-2">
-			<div class="agency-box" ng-click="viewNotifications()">
-				<div class="text-center">
-					<i class="fa fa-bell-o fa-2x"></i>
-				</div>
-				<p class="text-center">
-					Notifications
-				</p>
-			</div>
-		</div>
-
-		<div class="col-xs-6 col-sm-3 col-md-2">
 			<div class="agency-box" ng-click="setting = 'reset'">
 				<div class="text-center">
 					<i class="fa fa-eraser fa-2x"></i>
@@ -69,12 +58,12 @@
 	<div class="row" ng-if="setting === 'duedate'">
 
 		<div class="col-md-12">
-			<p>Change Due Date</p>
+			<p>Set Last Day to Vote</p>
 		</div>
 	
 		<div class="form-group">
 		    <div class="col-md-2">
-		        <label for="formDOB" class="sr-only">Due Date</label>
+		        <label for="formDOB" class="sr-only">Last Day</label>
 		        <p class="input-group">
 		          <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}" ng-model="user.due" ng-change="saveDueDate()" is-open="calendar.opened.due" datepicker-options="calendar.dateOptions" close-text="Close" placeholder="Due Date" show-button-bar="false"/>
 		          <span class="input-group-btn">
@@ -89,28 +78,10 @@
 	<div class="row" ng-if="setting === 'download'">
 
 		<div class="col-md-12">
-			<p>Download Reviewed Letters</p>
+			<p>Download Votes</p>
 		</div>
 	
 		<div class="form-group">
-		    <div class="col-md-2">
-		        <label for="formDOB" class="sr-only">Start Date</label>
-		        <p class="input-group">
-		          <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}" ng-model="calendar.startDate" is-open="calendar.opened.start" datepicker-options="calendar.dateOptions" close-text="Close" placeholder="Start Date" show-button-bar="false"/>
-		          <span class="input-group-btn">
-		            <button type="button" class="btn btn-upload" ng-click="calendar.open($event, 'start')"><i class="glyphicon glyphicon-calendar"></i></button>
-		          </span>
-		        </p>
-		    </div>
-		    <div class="col-md-2">
-		        <label for="formWinDate" class="sr-only">End Date</label>
-		        <p class="input-group">
-		          <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}" ng-model="calendar.endDate" is-open="calendar.opened.end" datepicker-options="calendar.dateOptions" close-text="Close" placeholder="End Date" show-button-bar="false"/>
-		          <span class="input-group-btn">
-		            <button type="button" class="btn btn-upload" ng-click="calendar.open($event, 'end')"><i class="glyphicon glyphicon-calendar"></i></button>
-		          </span>
-		        </p>
-		    </div>
 			<div class="col-md-3">
 				<button class='btn btn-upload' ng-click="downloadCSV()">Find</button>
 			</div>
@@ -174,20 +145,8 @@
 		</div>
 
 		<div ng-if="setting === 'reset'">
-			<p>Delete All Tracking Form Data - wipes all data to start a new Winter Wishes year</p>
+			<p>Delete All Data - wipes all data to start a election</p>
 			<button class="btn btn-cancel" ng-click="reset()">Reset</button>
 		</div>
-
-		<div ng-if="setting === 'notify'">
-			<div ng-if="!permission">
-				<p>Desktop Notifications - receive an alert when an agency submits their tracking form</p>
-				<button class="btn btn-save" ng-click="allowNotifications()">Enable Notifications</button>
-			</div>
-			<div ng-if="permission">
-				Desktop Notifications have already been enabled.
-			</div>
-		</div>
-
-	
 
 </section>

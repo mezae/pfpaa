@@ -71,14 +71,6 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
                 url: '/',
                 templateUrl: 'modules/core/views/home.html'
             })
-            .state('first', {
-                url: '/settings/profile',
-                templateUrl: 'modules/letters/views/firstLogin.html'
-            })
-            .state('confirm', {
-                url: '/settings/profile/first',
-                templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
-            })
             .state('login', {
                 url: '/login',
                 templateUrl: 'modules/users/views/authentication/signin.client.view.html'
@@ -96,7 +88,7 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', '$loc
         };
 
         $scope.isActive = function(route) {
-            return route === $location.path();
+            return route.indexOf($location.path()) > -1;
         };
 
         $scope.menuOpened = false;
@@ -207,7 +199,9 @@ angular.module('core').controller('HomeController', ['$scope', '$location', 'Aut
         $scope.user = Authentication.user;
 
         // If user is signed in then redirect back home
-        if ($scope.user) $location.path('/admin');
+        if ($scope.user) {
+        	$scope.user.status === 0 ? $location.path('/ballot') : $location.path('/thanks');
+        }
     }
 ]);
 // 'use strict';
@@ -376,7 +370,7 @@ angular.module('letters').config(['$stateProvider',
         // Letters state routing
         $stateProvider.
         state('command', {
-            url: '/admin:status',
+            url: '/ballot',
             templateUrl: 'modules/letters/views/command.html'
         }).
         state('voters', {
@@ -411,6 +405,10 @@ angular.module('letters').config(['$stateProvider',
             url: '/admin/emails/success',
             templateUrl: 'modules/emails/views/esent.html'
         }).
+        state('thanks', {
+            url: '/thanks',
+            templateUrl: 'modules/letters/views/thanks.html'
+        }).
         state('stats', {
             url: '/admin/stats',
             templateUrl: 'modules/letters/views/stats.html'
@@ -419,8 +417,8 @@ angular.module('letters').config(['$stateProvider',
 ]);
 'use strict';
 
-angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Agencies', 'candidates',
-    function($http, $window, $state, $scope, $filter, $modalInstance, Authentication, Agencies, candidates) {
+angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
+    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, candidates) {
         $scope.user = Authentication.user;
 
         $scope.index = candidates.selected;
@@ -429,6 +427,7 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
 
         $scope.viewCandidate = function(direction) {
             $scope.candidate = candidates.all[$scope.index += direction];
+            $scope.gotoTop();
         };
 
         //Allow user to delete selected partner and all associated recipients
@@ -455,15 +454,28 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
             if (action === 'add' && $scope.user.ballot.length < 6) {
                 $scope.user.ballot.push(selected._id);
             }
-            else {
+            else if (action === 'remove' && $scope.user.ballot.length <= 6) {
                 var ballot_index = $scope.user.ballot.indexOf(selected._id);
+                console.log(selected._id);
+                console.log(ballot_index);
                 $scope.user.ballot.splice(ballot_index, 1);
             }
-            $http.put('/agency/' + $scope.user.username, $scope.user).success(function(response) {
-                $scope.user = response;
-            }).error(function(response) {
-                console.log(response);
+            var user = new Users($scope.user);
+
+            user.$update(function(response) {
+                $scope.success = true;
+                Authentication.user = response;
+                $scope.user = Authentication.user;
+            }, function(response) {
+                $scope.error = response.data.message;
             });
+        };
+
+        $scope.gotoTop = function() {
+          // set the location.hash to the id of
+          // the element you wish to scroll to.
+          $location.hash('top');
+          $anchorScroll();
         };
 
         $scope.exitModal = function() {
@@ -495,7 +507,6 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             
             Articles.query(function(users) {
                 $scope.partners = users;
-                socket.syncUpdates('users', $scope.partners);
             });
         };
 
@@ -550,7 +561,7 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
                 templateUrl: 'modules/letters/views/candidate.modal.html',
                 controller: 'CandidateModalCtrl',
                 backdrop: 'static',
-                size: 'md',
+                size: 'lg',
                 resolve: {
                     candidates: function() {
                         return {
@@ -639,54 +650,18 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             }
         };
 
-        //Allows user to add/update a partner
-        $scope.saveAgency = function() {
-            $scope.alert.active = false;
-            if ($scope.isNewAgency) {
-                if (_.find($scope.partners, {
-                    'username': $scope.partner.username
-                })) {
-                    $scope.alert = {
-                        active: true,
-                        type: 'danger',
-                        msg: $scope.partner.username + ' already exists. Please edit the existing copy to avoid duplicates.'
-                    };
-                } else {
-                    signup($scope.partner);
+        $scope.reviewBallot = function() {
+            var modal = $modal.open({
+                templateUrl: 'modules/letters/views/myBallot.modal.html',
+                controller: 'BallotModalCtrl',
+                backdrop: 'static',
+                resolve: {
+                    candidates: function() {
+                        return $scope.partners;
+                    }
                 }
-            } else {
-                Agencies.update($scope.partner);
-            }
-            $scope.hideSidebar();
+            });
         };
-
-
-        //Allow user to delete selected partner and all associated recipients
-        $scope.deleteAgency = function(selected) {
-            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.agency + '.');
-            if (confirmation === 'DELETE') {
-                $http.delete('/agency/' + selected.username);
-            }
-        };
-
-        //Show current state of partner that user wants to edit
-        $scope.showSidebar = function(selected) {
-            $scope.isNewAgency = selected ? false : true;
-            $scope.partner = selected;
-            $scope.needToUpdate = true;
-            $scope.startSearch = false;
-        };
-
-        $scope.hideSidebar = function() {
-            $scope.partner = null;
-            $scope.needToUpdate = false;
-            if ($scope.query.username || $scope.query.status) $scope.startSearch = true;
-        };
-
-        $scope.$on('$destroy', function() {
-            socket.unsyncUpdates('users');
-        });
-
     }
 ]);
 'use strict';
@@ -791,6 +766,79 @@ angular.module('letters').controller('LabelController', ['$scope', '$window', '$
             downloadCSV(vids);
         };
 
+    }
+]);
+'use strict';
+
+angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
+    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, candidates) {
+        $scope.user = Authentication.user;
+        $scope.candidates = candidates;
+
+        $scope.viewCandidate = function(direction) {
+            $scope.candidate = candidates.all[$scope.index += direction];
+            $scope.gotoTop();
+        };
+
+        //Allow user to delete selected partner and all associated recipients
+        $scope.deleteAgency = function(selected) {
+            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.name + '.');
+            if (confirmation === 'DELETE') {
+                $http.delete('/articles/' + selected._id).success(function(response) {
+                    candidates.all.splice($scope.index, 1);
+                    var direction = $scope.index === 0 ? 0 : -1;
+                    if (candidates.all.length > 0) {
+                        $scope.viewCandidate(direction);
+                        $scope.max = candidates.all.length - 1;
+                    }
+                    else {
+                        $scope.exitModal();
+                    }
+                }).error(function(response) {
+                    console.log(response);
+                });
+            }
+        };
+
+        $scope.updateBallot = function(selected) {
+            var ballot_index = $scope.user.ballot.indexOf(selected._id);
+            $scope.user.ballot.splice(ballot_index, 1);
+            var user = new Users($scope.user);
+
+            user.$update(function(response) {
+                $scope.success = true;
+                Authentication.user = response;
+                $scope.user = Authentication.user;
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        $scope.submitBallot = function() {
+            $scope.user.status = 1;
+            var user = new Users($scope.user);
+
+            user.$update(function(response) {
+                $scope.success = true;
+                Authentication.user = response;
+                $scope.user = Authentication.user;
+                $modalInstance.close();
+                $location.path('/thanks');
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        $scope.gotoTop = function() {
+          // set the location.hash to the id of
+          // the element you wish to scroll to.
+          $location.hash('top');
+          $anchorScroll();
+        };
+
+        $scope.exitModal = function() {
+            $modalInstance.close();
+        };
     }
 ]);
 'use strict';
@@ -1993,22 +2041,6 @@ angular.module('letters')
                             array.push(item);
                         }
 
-                        if (item.status === 3) {
-                            var message = item.agency + ' just submitted their tracking form.';
-                            var options = {
-                                body: message,
-                                icon: 'http://img3.wikia.nocookie.net/__cb20141010004359/disney/images/4/49/Baymax_Armor_Wings_Render.png',
-                                dir: 'ltr',
-                                tag: 'submitted'
-                            };
-                            var notification = new Notification('Quick Update', options);
-
-                            notification.onclick = function() {
-                                window.open('https://winterwishes.herokuapp.com/#!/');
-                            };
-                        }
-
-
                         cb(event, item, array);
                     });
 
@@ -2227,7 +2259,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 Authentication.user = response;
                 $scope.user = Authentication.user;
                 // And redirect to appropriate page
-                $state.go('command');
+                $scope.user.status === 0 ? $state.go('command') : $state.go('thanks');
             }).error(function(response) {
                 $scope.error = response.message;
             });

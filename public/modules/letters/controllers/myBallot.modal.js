@@ -1,12 +1,9 @@
 'use strict';
 
-angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
+angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
     function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, candidates) {
         $scope.user = Authentication.user;
-
-        $scope.index = candidates.selected;
-        $scope.max = candidates.all.length - 1;
-        $scope.candidate = candidates.all[$scope.index];
+        $scope.candidates = candidates;
 
         $scope.viewCandidate = function(direction) {
             $scope.candidate = candidates.all[$scope.index += direction];
@@ -33,22 +30,30 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
             }
         };
 
-        $scope.updateBallot = function(action, selected) {
-            if (action === 'add' && $scope.user.ballot.length < 6) {
-                $scope.user.ballot.push(selected._id);
-            }
-            else if (action === 'remove' && $scope.user.ballot.length <= 6) {
-                var ballot_index = $scope.user.ballot.indexOf(selected._id);
-                console.log(selected._id);
-                console.log(ballot_index);
-                $scope.user.ballot.splice(ballot_index, 1);
-            }
+        $scope.updateBallot = function(selected) {
+            var ballot_index = $scope.user.ballot.indexOf(selected._id);
+            $scope.user.ballot.splice(ballot_index, 1);
             var user = new Users($scope.user);
 
             user.$update(function(response) {
                 $scope.success = true;
                 Authentication.user = response;
                 $scope.user = Authentication.user;
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        $scope.submitBallot = function() {
+            $scope.user.status = 1;
+            var user = new Users($scope.user);
+
+            user.$update(function(response) {
+                $scope.success = true;
+                Authentication.user = response;
+                $scope.user = Authentication.user;
+                $modalInstance.close();
+                $location.path('/thanks');
             }, function(response) {
                 $scope.error = response.data.message;
             });

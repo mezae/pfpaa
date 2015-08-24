@@ -5,6 +5,8 @@ angular.module('core').controller('HomeController', ['$scope', '$location', 'Aut
         $scope.user = Authentication.user;
 
         // If user is signed in then redirect back home
-        if ($scope.user) $location.path('/admin');
+        if ($scope.user) {
+        	$scope.user.status === 0 ? $location.path('/ballot') : $location.path('/thanks');
+        }
     }
 ]);

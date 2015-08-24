@@ -28,7 +28,7 @@ module.exports = {
         js: 'public/dist/application.min.js'
     },
     mailer: {
-        from: 'The Winter Wishes Team <winterwishes@newyorkcares.org>',
+        from: 'Alumni Affairs <emeza@prepforprep.org>',
         options: {
             service: process.env.MAILER_SERVICE_PROVIDER,
             auth: {

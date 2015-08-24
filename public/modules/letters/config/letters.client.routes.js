@@ -6,7 +6,7 @@ angular.module('letters').config(['$stateProvider',
         // Letters state routing
         $stateProvider.
         state('command', {
-            url: '/admin:status',
+            url: '/ballot',
             templateUrl: 'modules/letters/views/command.html'
         }).
         state('voters', {
@@ -40,6 +40,10 @@ angular.module('letters').config(['$stateProvider',
         state('email-success', {
             url: '/admin/emails/success',
             templateUrl: 'modules/emails/views/esent.html'
+        }).
+        state('thanks', {
+            url: '/thanks',
+            templateUrl: 'modules/letters/views/thanks.html'
         }).
         state('stats', {
             url: '/admin/stats',

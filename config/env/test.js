@@ -4,10 +4,10 @@ module.exports = {
     db: 'mongodb://localhost/meanww-test',
     port: 3001,
     app: {
-        title: 'Winter Wishes - Test Environment'
+        title: 'Alumni Association Election - Test Environment'
     },
     mailer: {
-        from: 'The Winter Wishes Team <winterwishes@newyorkcares.org>',
+        from: 'Alumni Affairs <emeza@prepforprep.org>',
         options: {
             service: process.env.MAILER_SERVICE_PROVIDER,
             auth: {

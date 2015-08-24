@@ -13,7 +13,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 Authentication.user = response;
                 $scope.user = Authentication.user;
                 // And redirect to appropriate page
-                $state.go('command');
+                $scope.user.status === 0 ? $state.go('command') : $state.go('thanks');
             }).error(function(response) {
                 $scope.error = response.message;
             });

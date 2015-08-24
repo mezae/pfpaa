@@ -172,7 +172,19 @@ select option[default] {
   white-space: nowrap;
 }
 
+.photo-container {
+  position: relative;
+}
+
 .my-vote {
   position: absolute;
-  top: 0;
+  bottom: 0;
+  right: 0;
+  color: #85c739;
+  background-color: white;
+}
+
+.candidate-photo {
+  height: 155px;
+  margin: auto;
 }

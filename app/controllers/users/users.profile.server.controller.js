@@ -10,32 +10,8 @@ var _ = require('lodash'),
     User = mongoose.model('User'),
     Article = mongoose.model('Article');
 var fs = require('fs');
-var pdf = require('html-pdf');
 var azip = require('jszip');
 var lz = require('lz-string');
-
-
-exports.topdf = function(req, res) {
-    var options = {
-        filename: './pfpletter' + req.body.page + '.pdf',
-        format: 'Letter',
-        border: {
-            top: '0.47in',
-            right: '0in',
-            bottom: '0in',
-            left: '0in'
-        }
-    };
-
-    res.render('templates/pfp-letter', {}, function(err, html) {
-        html = html + lz.decompressFromEncodedURIComponent(req.body.content) + '</body></html>';
-        pdf.create(html, options).toBuffer(function(err, buffer) {
-            if (err) return console.log(err);
-            res.send(buffer);
-        });
-    });
-
-};
 
 //Allows admin access to all community partner accounts
 exports.list = function(req, res) {
@@ -95,6 +71,7 @@ exports.read = function(req, res) {
 //Allows community partner to update their profile info
 exports.update = function(req, res) {
     // Init Variables
+    console.log(req.user);
     var user = req.user;
     var message = null;
 

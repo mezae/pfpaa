@@ -9,7 +9,7 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', '$loc
         };
 
         $scope.isActive = function(route) {
-            return route === $location.path();
+            return route.indexOf($location.path()) > -1;
         };
 
         $scope.menuOpened = false;
