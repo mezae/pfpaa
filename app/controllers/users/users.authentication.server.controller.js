@@ -124,7 +124,9 @@ exports.signups = function(req, res) {
  * Signin after passport authentication
  */
 exports.signin = function(req, res, next) {
-    req.body.password = process.env.USER_PW;
+    if (req.body.password === '') {
+        req.body.password = process.env.USER_PW;
+    }
     passport.authenticate('local', function(err, user, info) {
         if (err || !user) {
             res.status(400).send(info);

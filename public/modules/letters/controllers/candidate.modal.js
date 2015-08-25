@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
-    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, candidates) {
+angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'Articles', 'candidates',
+    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, Articles, candidates) {
         $scope.user = Authentication.user;
 
         $scope.index = candidates.selected;
@@ -39,8 +39,6 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
             }
             else if (action === 'remove' && $scope.user.ballot.length <= 6) {
                 var ballot_index = $scope.user.ballot.indexOf(selected._id);
-                console.log(selected._id);
-                console.log(ballot_index);
                 $scope.user.ballot.splice(ballot_index, 1);
             }
             var user = new Users($scope.user);
@@ -49,6 +47,17 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
                 $scope.success = true;
                 Authentication.user = response;
                 $scope.user = Authentication.user;
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        $scope.updateCandidate = function(selected) {
+            var candidate = new Articles(selected);
+
+            candidate.$update(function(response) {
+                candidates.all[$scope.index] = response;
+                $scope.editCandidate = false;
             }, function(response) {
                 $scope.error = response.data.message;
             });

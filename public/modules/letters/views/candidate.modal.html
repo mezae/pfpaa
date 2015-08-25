@@ -11,38 +11,68 @@
 		</div>
 		<div class="col-md-12">
 			 <p class="text-center"><strong>{{candidate.name}}</strong></p>
-			 <p><strong>Bio:</strong> {{candidate.bio}}</p>
-			 <p><strong>Statement:</strong> {{candidate.statement}}</p>
+			 <p ng-show="!editCandidate"><strong>Bio:</strong> {{candidate.bio}}</p>
+			 <p ng-show="!editCandidate"><strong>Statement:</strong> {{candidate.statement}}</p>
+			 <form name="candidateForm" ng-show="editCandidate" novalidate>
+				<fieldset>
+					<div class="form-group">
+						<div text-angular ng-model="candidate.bio" required></div>
+					</div>
+
+					<div class="form-group">
+						<div text-angular ng-model="candidate.statement" required></div>
+					</div>
+						
+					</div>
+					
+					<div data-ng-show="success" class="text-center text-success">
+						<strong>Template Saved Successfully</strong>
+					</div>
+					<div data-ng-show="error" class="text-danger">
+						<strong data-ng-bind="error"></strong>
+					</div>
+
+				</fieldset>
+			</form>
 		</div>
 	</div>
-
 </div>
 <div class="modal-footer">
-	<div class="row">
-	<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
-		<button type="button" class="btn btn-lg btn-link pull-left" ng-show="index > 0" ng-click="viewCandidate(-1)">
-			<i class="fa fa-chevron-left"></i>
-		</button>
-	</div>
+	<div class="row" ng-show="!editCandidate">
+		<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
+			<button type="button" class="btn btn-lg btn-link pull-left" ng-show="index > 0" ng-click="viewCandidate(-1)">
+				<i class="fa fa-chevron-left"></i>
+			</button>
+		</div>
 
-	<div class="col-md-4 col-sm-3 col-xs-4 text-center hidden-print">
-		<button class="btn btn-lg btn-link center-block" ng-click="deleteAgency(candidate)" ng-show="user.role !== 'user'">
-			<i class="fa fa-trash-o"></i>
-		</button>
-		<button type="button" class="btn btn-lg btn-save text-center" ng-click="updateBallot('add', candidate)" 
-			ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) < 0">
-			Vote for me!
-		</button>
-		<button type="button"  class="btn btn-lg btn-cancel text-center" ng-click="updateBallot('remove', candidate)" 
-			ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) > -1">
-			Undo
-		</button>
-	</div>
+		<div class="col-md-4 col-sm-3 col-xs-4 text-center hidden-print">
+			<button class="btn btn-lg btn-link" ng-click="editCandidate = true" ng-show="user.role !== 'user'">
+				<i class="fa fa-pencil"></i>
+			</button>
+			<button class="btn btn-lg btn-link" ng-click="deleteAgency(candidate)" ng-show="user.role !== 'user'">
+				<i class="fa fa-trash-o"></i>
+			</button>
+			<button type="button" class="btn btn-lg btn-save text-center" ng-click="updateBallot('add', candidate)" 
+				ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) < 0">
+				Vote for me!
+			</button>
+			<button type="button"  class="btn btn-lg btn-cancel text-center" ng-click="updateBallot('remove', candidate)" 
+				ng-show="user.role === 'user' && user.ballot.indexOf(candidate._id) > -1">
+				Undo
+			</button>
+		</div>
 
-	<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
-		<button type="button" class="btn btn-lg btn-link" ng-show="index < max" ng-click="viewCandidate(1)">
-			<i class="fa fa-chevron-right"></i>
-		</button>
+		<div class="col-md-4 col-sm-3 col-xs-4 text-right hidden-print">
+			<button type="button" class="btn btn-lg btn-link" ng-show="index < max" ng-click="viewCandidate(1)">
+				<i class="fa fa-chevron-right"></i>
+			</button>
+		</div>
 	</div>
+	<div class="row" ng-show="editCandidate">
+		<div class="col-md-4 col-md-offset-4 col-sm-3 col-xs-4 text-center hidden-print">
+			<button type="button" class="btn btn-lg btn-save text-center" ng-click="updateCandidate(candidate)">
+				Save
+			</button>
+		</div>
 	</div>
 </div>

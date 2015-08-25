@@ -127,9 +127,6 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
 
                 for (var i = 0; i < rows.length; i++) {
                     record = rows[i].split(',');
-
-                    console.log((record[headers.pic_col].length) ? record[headers.pic_col] : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png');
-
                     signup({
                         name: record[headers.name_col],
                         contingent: record[headers.cono_col],

@@ -7,8 +7,6 @@ angular.module('letters').controller('AgencyController', ['$scope', '$q', '$stat
 
         if (!$scope.user) $location.path('/');
 
-        console.log($scope.user);
-
         $scope.adminView = $scope.user.role !== 'user';
         $scope.userView = $scope.user.role === 'user';
         var currentIndex = 0;

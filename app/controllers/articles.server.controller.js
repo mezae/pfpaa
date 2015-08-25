@@ -94,7 +94,6 @@ exports.index = function(req, res) {
  * Letter middleware
  */
 exports.articleByID = function(req, res, next, id) {
-    console.log(req);
     Letter.findOne({
         _id: id
     }, '-created').exec(function(err, article) {

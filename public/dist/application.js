@@ -385,14 +385,6 @@ angular.module('letters').config(['$stateProvider',
             url: '/admin/settings/manage',
             templateUrl: 'modules/letters/views/settings.manage-admins.html'
         }).
-        state('tracking', {
-            url: '/admin/agency/:articleId',
-            templateUrl: 'modules/letters/views/tracking.html'
-        }).
-        state('agTracking', {
-            url: '/agency/:articleId',
-            templateUrl: 'modules/letters/views/tracking.html'
-        }).
         state('email', {
             url: '/admin/email',
             templateUrl: 'modules/emails/views/emails.html'
@@ -417,8 +409,8 @@ angular.module('letters').config(['$stateProvider',
 ]);
 'use strict';
 
-angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'candidates',
-    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, candidates) {
+angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'Articles', 'candidates',
+    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, Articles, candidates) {
         $scope.user = Authentication.user;
 
         $scope.index = candidates.selected;
@@ -456,8 +448,6 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
             }
             else if (action === 'remove' && $scope.user.ballot.length <= 6) {
                 var ballot_index = $scope.user.ballot.indexOf(selected._id);
-                console.log(selected._id);
-                console.log(ballot_index);
                 $scope.user.ballot.splice(ballot_index, 1);
             }
             var user = new Users($scope.user);
@@ -466,6 +456,17 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
                 $scope.success = true;
                 Authentication.user = response;
                 $scope.user = Authentication.user;
+            }, function(response) {
+                $scope.error = response.data.message;
+            });
+        };
+
+        $scope.updateCandidate = function(selected) {
+            var candidate = new Articles(selected);
+
+            candidate.$update(function(response) {
+                candidates.all[$scope.index] = response;
+                $scope.editCandidate = false;
             }, function(response) {
                 $scope.error = response.data.message;
             });
@@ -612,9 +613,6 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
 
                 for (var i = 0; i < rows.length; i++) {
                     record = rows[i].split(',');
-
-                    console.log((record[headers.pic_col].length) ? record[headers.pic_col] : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png');
-
                     signup({
                         name: record[headers.name_col],
                         contingent: record[headers.cono_col],
@@ -1143,8 +1141,6 @@ angular.module('letters').controller('AgencyController', ['$scope', '$q', '$stat
         $scope.user = Authentication.user;
 
         if (!$scope.user) $location.path('/');
-
-        console.log($scope.user);
 
         $scope.adminView = $scope.user.role !== 'user';
         $scope.userView = $scope.user.role === 'user';

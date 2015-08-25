@@ -21,14 +21,6 @@ angular.module('letters').config(['$stateProvider',
             url: '/admin/settings/manage',
             templateUrl: 'modules/letters/views/settings.manage-admins.html'
         }).
-        state('tracking', {
-            url: '/admin/agency/:articleId',
-            templateUrl: 'modules/letters/views/tracking.html'
-        }).
-        state('agTracking', {
-            url: '/agency/:articleId',
-            templateUrl: 'modules/letters/views/tracking.html'
-        }).
         state('email', {
             url: '/admin/email',
             templateUrl: 'modules/emails/views/emails.html'
