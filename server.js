@@ -1,7 +1,5 @@
 'use strict';
 
-console.log('here');
-
 // Set default node environment to development
 require('dotenv').load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'environment';
@@ -26,7 +24,6 @@ var db = mongoose.connect(config.db, function(err) {
     }
 });
 
-console.log(config.seedDB);
 // Populate DB with sample data
 if (config.seedDB) require('./config/seed');
 

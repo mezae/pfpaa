@@ -145,8 +145,11 @@
 		</div>
 
 		<div ng-if="setting === 'reset'">
-			<p>Delete All Data - wipes all data to start a election</p>
-			<button class="btn btn-cancel" ng-click="reset()">Reset</button>
+			<p>Delete All Data - wipes all data, users and candidates, to start a new election</p>
+			<button class="btn btn-cancel" ng-click="resetAll()">Reset All</button>
+			</br></br>
+			<p>Delete All Candidates - wipes all candidate data to start a election</p>
+			<button class="btn btn-cancel" ng-click="resetCandidates()">Reset Candidates</button>
 		</div>
 
 </section>

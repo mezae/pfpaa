@@ -43,22 +43,22 @@
 
 		<!-- File Dropzone -->
 		<div class="row">
-			<div class="col-md-12" ng-show="partners.length === 0 || needToUpdate">
+			<div class="col-md-12" ng-show="(partners.length === 0 || needToUpdate) && user.role !== 'user'">
 				<div ngf-select ngf-drop class="drop-box" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ngf-change="handleFileSelect($files)" ngf-accept="'application/vnd.ms-excel,text/csv'" accept="application/vnd.ms-excel,text/csv">
-					<p class="lead">drop csv file here or <br/>click to browse<p>
+					<p class="lead">drop csv file here or <br/>click to browse</p>
 			    </div>
 		    </div>
 		</div>
 
-		<div class="row" ng-show="!needToUpdate">
+		<div class="row" ng-show="!needToUpdate || user.role === 'user'">
 			<div ng-repeat="cp in partners">
 			  <div class="col-xs-6 col-sm-4 col-md-2">
 			    <div class="thumbnail">
 			    	<div class="photo-container candidate-photo">
-			      		<img ng-src="{{cp.picture}}" class="img-responsive candidate-photo" alt="{{cp.name}}">
+			      		<img ng-src="{{cp.photo}}" class="img-responsive candidate-photo" alt="{{cp.name}}">
 			      	</div>
 					<div class="caption">
-						<h4 class="text-center cut-name">{{cp.name}}</h4>
+						<h5 class="text-center cut-name">{{cp.first_name}} {{cp.last_name}}</h5>
 						<p><buttton type="button" class="btn btn-upload center-block" role="button" ng-click="showCandidate($index)">View Profile</button></p>
 					</div>
 			    </div>

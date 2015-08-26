@@ -124,14 +124,23 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
             }
         };
 
-        $scope.reset = function() {
+        $scope.resetAll = function() {
             var confirmation = $window.prompt('Please type FOREVER to wipe all data.');
             if (confirmation === 'FOREVER') {
                 $http.get('/users/reset').success(function(response) {
                     // If successful we assign the response to the global user model
                     Authentication.user = response;
-                    $scope.user.status = 0;
-                    Users.update($scope.user);
+                }).error(function(response) {
+                    $scope.error = response.message;
+                });
+            }
+        };
+
+        $scope.resetCandidates = function() {
+            var confirmation = $window.prompt('Please type FOREVER to wipe all candidate data.');
+            if (confirmation === 'FOREVER') {
+                $http.get('/articles/reset').success(function(response) {
+                    console.log('success');
                 }).error(function(response) {
                     $scope.error = response.message;
                 });

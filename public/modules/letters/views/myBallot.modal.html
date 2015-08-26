@@ -14,11 +14,11 @@
 			  <div class="col-xs-6 col-sm-4 col-md-4">
 			    <div class="thumbnail">
 			    	<div class="photo-container candidate-photo center-block text-center">
-			      		<img ng-src="{{cp.picture}}" class="img-responsive candidate-photo" alt="...">
+			      		<img ng-src="{{cp.photo}}" class="img-responsive candidate-photo" alt="...">
 			      		<i class="fa fa-check fa-2x my-vote" ng-show="user.ballot.indexOf(cp._id) > -1"></i>
 			      	</div>
 					<div class="caption">
-						<h4 class="text-center cut-name">{{cp.name}}</h4>
+						<h5 class="text-center cut-name">{{cp.first_name}} {{cp.last_name}}</h5>
 						<p><a href="#" class="btn btn-cancel center-block" role="button" ng-click="updateBallot(cp)">Remove</a></p>
 					</div>
 			    </div>

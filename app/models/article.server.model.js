@@ -14,12 +14,16 @@ var ArticleSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    name: {
+    first_name: {
         type: String,
         default: ''
     },
-    contingent: {
-        type: Number,
+    last_name: {
+        type: String,
+        default: ''
+    },
+    prep_name: {
+        type: String,
         default: ''
     },
     bio: {
@@ -30,9 +34,11 @@ var ArticleSchema = new Schema({
         type: String,
         default: ''
     },
-    picture: {
-        type: String,
-        default: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
+    photo: {
+        type: String
+    },
+    submitted: {
+        type: Date
     },
     updated: {
         type: Date,

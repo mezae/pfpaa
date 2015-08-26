@@ -37,7 +37,9 @@ module.exports = {
                 'public/lib/textAngular/dist/textAngular-rangy.min.js',
                 'public/lib/ng-file-upload/ng-file-upload.js',
                 'public/lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
-                'public/lib/lz-string/libs/lz-string.min.js'
+                'public/lib/lz-string/libs/lz-string.min.js',
+                'public/lib/lz-string/libs/lz-string.min.js',
+                'public/lib/papaparse/papaparse.js'
             ]
         },
         css: [

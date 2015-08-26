@@ -12,6 +12,8 @@ module.exports = function(app) {
         .get(users.requiresLogin, articles.index)
         .post(users.requiresLogin, articles.create);
 
+    app.route('/articles/reset').get(users.hasAuthorization('admin'), articles.resetCandidates);
+
     app.route('/articles/:articleId')
         .get(users.requiresLogin, articles.read)
         .put(users.requiresLogin, articles.update)

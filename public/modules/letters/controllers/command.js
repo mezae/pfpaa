@@ -29,6 +29,7 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
         //Allows admin to create new accounts
         function signup(credentials) {
             $http.post('/articles', credentials).success(function(response) {
+                $scope.partners.push(response);
                 console.log(response.message);
             }).error(function(response) {
                 $scope.alert = {
@@ -88,8 +89,10 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             });
         }
 
-        function proccessFile(headers, rows) {
-            var required_fields = ['Name', 'Contingent', 'Bio', 'Statement', 'Picture URL'];
+        function proccessFile(data) {
+            var headers = data.shift();
+            var rows = data;
+            var required_fields = ['Submit Date', 'First Name', 'Last Name', 'Prep Formatted Name', 'Bio', 'Statement', 'Photo URL'];
             var modal = $modal.open({
                 templateUrl: 'modules/letters/views/fileuploadmodal.html',
                 controller: 'MappingModalCtrl',
@@ -109,11 +112,13 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
             modal.result.then(function(csvheaders) {
 
                 headers = {
-                    name_col: headers.indexOf(csvheaders[0].label),
-                    cono_col: headers.indexOf(csvheaders[1].label),
-                    bio_col: headers.indexOf(csvheaders[2].label),
-                    state_col: headers.indexOf(csvheaders[3].label),
-                    pic_col: headers.indexOf(csvheaders[4].label)
+                    sdate_col: headers.indexOf(csvheaders[0].label),
+                    fname_col: headers.indexOf(csvheaders[1].label),
+                    lname_col: headers.indexOf(csvheaders[2].label),
+                    pname_col: headers.indexOf(csvheaders[3].label),
+                    bio_col: headers.indexOf(csvheaders[4].label),
+                    state_col: headers.indexOf(csvheaders[5].label),
+                    pic_col: headers.indexOf(csvheaders[6].label)
                 };
 
                 $scope.alert = {
@@ -121,18 +126,19 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
                     type: 'info',
                     msg: 'Great! Your tracking forms will appear shortly...'
                 };
-                $scope.oldUsers = $scope.partners.length;
-                $scope.newUsers = rows.length;
+
                 var record = null;
 
                 for (var i = 0; i < rows.length; i++) {
-                    record = rows[i].split(',');
+                    record = rows[i];
                     signup({
-                        name: record[headers.name_col],
-                        contingent: record[headers.cono_col],
+                        submitted: record[headers.sdate_col],
+                        first_name: record[headers.fname_col],
+                        last_name: record[headers.lname_col],
+                        prep_name: record[headers.pname_col],
                         bio: record[headers.bio_col],
                         statement: record[headers.state_col],
-                        picture: (record[headers.pic_col].length) ? record[headers.pic_col] : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
+                        photo: (record[headers.pic_col].length) ? record[headers.pic_col] : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
                     });
                 }
             });
@@ -149,16 +155,12 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
                 };
             } else {
                 var file = files[0];
-                var reader = new FileReader();
-                reader.onload = function(file) {
-                    var content = file.target.result;
-                    var rows = content.split(/[\r\n|\n]+/);
-                    var headers = rows.shift();
-                    headers = headers.split(',');
-                    proccessFile(headers, rows);
-                };
-                reader.readAsText(file);
-                files[0] = undefined;
+                Papa.parse(file, {
+                    complete: function(results) {
+                        proccessFile(results.data);
+                        files[0] = undefined;
+                    }
+                });
             }
         };
 

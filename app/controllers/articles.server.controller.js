@@ -78,7 +78,7 @@ exports.delete = function(req, res) {
  */
 exports.index = function(req, res) {
 
-    Letter.find({}, '-__v -created -updated').exec(function(err, letters) {
+    Letter.find({}, '-__v -created -updated').sort('submitted').exec(function(err, letters) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -88,6 +88,18 @@ exports.index = function(req, res) {
         }
     });
 
+};
+
+exports.resetCandidates = function(req, res) {
+    Letter.remove({}, function(err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            console.log('All Candidates Removed');
+        }
+    });
 };
 
 /**
