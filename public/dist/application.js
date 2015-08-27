@@ -578,7 +578,7 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
         function proccessFile(data) {
             var headers = data.shift();
             var rows = data;
-            var required_fields = ['Submit Date', 'First Name', 'Last Name', 'Prep Formatted Name', 'Bio', 'Statement', 'Photo URL'];
+            var required_fields = ['Timestamp', 'First Name', 'Last Name', 'Prep Formatted Name', 'Bio', 'Statement', 'Photo URL'];
             var modal = $modal.open({
                 templateUrl: 'modules/letters/views/fileuploadmodal.html',
                 controller: 'MappingModalCtrl',

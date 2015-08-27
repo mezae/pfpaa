@@ -124,10 +124,7 @@ exports.signups = function(req, res) {
  * Signin after passport authentication
  */
 exports.signin = function(req, res, next) {
-    console.log(req.body.password);
-
     if (req.body.password === undefined) {
-        console.log('here');
         req.body.password = process.env.USER_PW;
     }
     passport.authenticate('local', function(err, user, info) {
