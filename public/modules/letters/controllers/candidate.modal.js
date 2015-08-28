@@ -34,10 +34,10 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
         };
 
         $scope.updateBallot = function(action, selected) {
-            if (action === 'add' && $scope.user.ballot.length < 6) {
+            if (action === 'add') {
                 $scope.user.ballot.push(selected._id);
             }
-            else if (action === 'remove' && $scope.user.ballot.length <= 6) {
+            else if (action === 'remove') {
                 var ballot_index = $scope.user.ballot.indexOf(selected._id);
                 $scope.user.ballot.splice(ballot_index, 1);
             }

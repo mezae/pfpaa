@@ -15,33 +15,16 @@ var lz = require('lz-string');
 
 //Allows admin access to all community partner accounts
 exports.list = function(req, res) {
-    if (req.query.role || req.user.role === 'admin') {
-        var query =
-            req.query.role ? req.query : {
-                role: 'user'
-            };
-        var offset = req.query.offset > 1 ? req.query.offset : '';
-        var limit = req.query.limit ? req.query.limit : '';
-        var select = req.query.role && req.user.role !== 'admin' ? 'due -_id' : '-salt -password -created -provider';
-        var stream = User.find(query, select).skip(offset).limit(limit).sort('username').lean().stream();
-        var first = true;
-        res.writeHead(200, {
-            'Content-Type': 'application/json'
-        });
-        res.write('[');
-        stream.on('data', function(doc) {
-            if (first) {
-                first = false;
-                res.write(JSON.stringify(doc));
+    if (req.user.role === 'admin') {
+        User.find({}, 'username ballot').sort('username').exec(function(err, users) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
             } else {
-                res.write(',' + JSON.stringify(doc));
+                res.json(users);
             }
         });
-
-        stream.on('close', function() {
-            res.write(']');
-        });
-        stream.pipe(res);
     } else {
         return res.status(403).send({
             message: 'User is not authorized'

@@ -45,18 +45,20 @@ angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$a
         };
 
         $scope.submitBallot = function() {
-            $scope.user.status = 1;
-            var user = new Users($scope.user);
+            if ($scope.user.ballot.length <= 6) {
+                $scope.user.status = 1;
+                var user = new Users($scope.user);
 
-            user.$update(function(response) {
-                $scope.success = true;
-                Authentication.user = response;
-                $scope.user = Authentication.user;
-                $modalInstance.close();
-                $location.path('/thanks');
-            }, function(response) {
-                $scope.error = response.data.message;
-            });
+                user.$update(function(response) {
+                    $scope.success = true;
+                    Authentication.user = response;
+                    $scope.user = Authentication.user;
+                    $modalInstance.close();
+                    $location.path('/thanks');
+                }, function(response) {
+                    $scope.error = response.data.message;
+                });
+            }
         };
 
         $scope.gotoTop = function() {

@@ -9,6 +9,7 @@
   border-color: #5C5C5C;
   border-radius: 50%;
   padding: 6px 9px;
+  z-index: 1000;
 }
 
 .closeModal:hover {
@@ -16,8 +17,11 @@
 	border-color: #5C5C5C;
 }
 
-.modal-body.same-size {
-  min-height: 23em;
+@media screen and (min-width: 321px) {
+  .modal .candidate-modal{
+      height: 560px;
+      overflow-y: auto;
+  }
 }
 
 .modal-footer.pages {

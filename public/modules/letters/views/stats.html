@@ -1,7 +1,9 @@
-<div data-ng-controller="CommandController">
+<div data-ng-controller="SummaryController">
 	<div class="row">
 		<div class="col-md-12">
-
+			<div ng-repeat="member in tally">
+				{{member.candidateID}} - {{member.count}}
+			</div>
 		</div>
 	</div>
 </div>

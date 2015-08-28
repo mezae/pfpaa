@@ -9,93 +9,27 @@ angular.module('letters')
 
         if (!$scope.authentication.user) $location.path('/');
 
-        angular.element($window).on('resize', function() {
-            $scope.$apply();
-        });
+        Articles.query(function(candidates) {
 
-        Agencies.query(function(users) {
+            Agencies.query(function(users) {
 
-            var names = ['Not Yet Started', 'In Progress', 'Completed', 'Submitted', 'Under Review', 'Reviewed'];
-            var groups = _.countBy(users, function(form) {
-                return form.status;
+                var groups = _.pluck(users, 'ballot');
+                var votes = _.flatten(groups);
+                var count = _.countBy(votes);
+
+                $scope.tally = [];
+                _.forEach(count, function(c, g) {
+                    if (g) {
+                        $scope.tally.push({
+                            candidateID: _.result(_.find(candidates, function(chr) {
+                                            return chr._id === g;
+                                        }), 'prep_name'),
+                            count: c
+                        });
+                    }
+                });
+
             });
-
-            $scope.status = [];
-            _.forEach(groups, function(c, g) {
-                $scope.status.push({
-                    status: g,
-                    name: names[g],
-                    count: c,
-                    percent: (c / users.length * 100).toFixed(1) + '%'
-                });
-            });
-
-        });
-
-        Articles.query(function(useful) {
-            if (useful.length > 0) {
-                var counts = _.countBy(useful, function(letter) {
-                    return $filter('date')(letter.updated, 'yyyy-MM-dd');
-                });
-
-                var activeDays = [];
-                _.forEach(counts, function(count, date) {
-                    activeDays.push(date);
-                });
-
-                activeDays = activeDays.sort(function(a, b) {
-                    return b < a;
-                });
-
-                $scope.wishesAdded = [];
-                var current = activeDays[0];
-                var endDate = new Date();
-                endDate.setDate(endDate.getDate() + 1);
-                endDate = $filter('date')(endDate, 'yyyy-MM-dd');
-                while (current !== endDate) {
-                    $scope.wishesAdded.push({
-                        date: String(current),
-                        count: counts[current] ? counts[current] : 0
-                    });
-                    current = new Date(current);
-                    current.setDate(current.getDate() + 2);
-                    current = $filter('date')(current, 'yyyy-MM-dd');
-                }
-
-                var wordCounts = [];
-                var fillers = ' , a, an, and, but, or, the, this, that, for, is, it, my, your, i, am, is, be, you, me, it, he, she, to, please, dont, who, what, where, when, why, how, which, with';
-
-                _.forEach(useful, function(letter) {
-                    var words = _.words(letter.gift);
-
-                    _.forEach(words, function(word) {
-                        word = word.toLowerCase();
-                        if (!_.includes(fillers, word)) {
-                            var cc = _.find(wordCounts, {
-                                'name': word
-                            });
-                            if (cc) {
-                                cc.value += 1;
-                            } else {
-                                wordCounts.push({
-                                    name: word,
-                                    value: 1
-                                });
-                            }
-                        }
-                    });
-                });
-
-                var sorted = _.sortBy(wordCounts, function(word) {
-                    return -word.value;
-                });
-
-                $scope.gifts = _.take(sorted, 10);
-            } else {
-                $scope.wishesAdded = [];
-                $scope.gifts = [];
-            }
-
         });
 
     }
