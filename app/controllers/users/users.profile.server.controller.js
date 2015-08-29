@@ -54,7 +54,6 @@ exports.read = function(req, res) {
 //Allows community partner to update their profile info
 exports.update = function(req, res) {
     // Init Variables
-    console.log(req.user);
     var user = req.user;
     var message = null;
 
@@ -83,7 +82,7 @@ exports.update = function(req, res) {
 //Delete a community partner's account
 exports.delete = function(req, res) {
     var user = req.user;
-    if (user.username !== 'AAA') {
+    if (user.role !== 'admin') {
         user.remove(function(err) {
             if (err) {
                 return res.status(400).send({

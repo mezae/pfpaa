@@ -1,11 +1,13 @@
 'use strict';
 /* global _: false */
 
-angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles', 'socket',
-    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles, socket) {
+angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles',
+    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles) {
         $scope.user = Authentication.user;
 
         if (!$scope.user) $location.path('/').replace();
+        $scope.adminView = $scope.user.role !== 'user';
+        $scope.userView = $scope.user.role === 'user';
 
         $scope.needToUpdate = false; //helps hide sidebar when it's not needed
         $scope.alert = {

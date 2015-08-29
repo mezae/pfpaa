@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'Articles', 'candidates',
-    function($http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, Articles, candidates) {
+angular.module('letters').controller('CandidateModalCtrl', ['$sce', '$http', '$window', '$anchorScroll', '$location', '$state', '$scope', '$filter', '$modalInstance', 'Authentication', 'Users', 'Articles', 'candidates',
+    function($sce, $http, $window, $anchorScroll, $location, $state, $scope, $filter, $modalInstance, Authentication, Users, Articles, candidates) {
         $scope.user = Authentication.user;
 
         $scope.index = candidates.selected;
@@ -9,6 +9,7 @@ angular.module('letters').controller('CandidateModalCtrl', ['$http', '$window', 
         $scope.candidate = candidates.all[$scope.index];
 
         $scope.viewCandidate = function(direction) {
+            if($scope.success) $scope.success = false;
             $scope.candidate = candidates.all[$scope.index += direction];
             $scope.gotoTop();
         };

@@ -1,8 +1,30 @@
 <div data-ng-controller="SummaryController">
+
 	<div class="row">
 		<div class="col-md-12">
-			<div ng-repeat="member in tally">
-				{{member.candidateID}} - {{member.count}}
+			<ol class="breadcrumb">
+				<li><a href="/#!/ballot"><i class="glyphicon glyphicon-home"></i></a></li>
+				<li class="active">Tally</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="table-responsive">
+				<table class="table table-stripes">
+					<thead>
+						<tr>
+							<th>Candidate</th>
+							<th class="text-center">Votes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="member in tally | orderBy: '-count'">
+							<td>{{member.candidateID}}</td><td class="text-center">{{member.count}}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

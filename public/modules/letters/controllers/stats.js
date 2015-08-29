@@ -13,8 +13,8 @@ angular.module('letters')
 
             Agencies.query(function(users) {
 
-                var groups = _.pluck(users, 'ballot');
-                var votes = _.flatten(groups);
+                var ballots = _.pluck(users, 'ballot');
+                var votes = _.flatten(ballots);
                 var count = _.countBy(votes);
 
                 $scope.tally = [];

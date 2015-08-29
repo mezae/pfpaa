@@ -38,16 +38,8 @@
   }
 }
 
-
-
 h2 {
   margin-top: 5px;
-}
-
-
-
-td {
-  cursor: pointer;
 }
 
 .nav-tabs {
@@ -78,59 +70,16 @@ td {
 
 /*tables*/
 .table-stripes>tbody>tr:nth-child(even) {
-  background-color: #f2faf2;
+  background-color: white;
 }
 
 .table tbody>tr>td{
   vertical-align: middle;
-  text-align: center;
 }
 
-th {
-  text-align: center;
-}
-
-.cap {
-  text-transform: capitalize;
-}
-
-.goodflag {
-  color: #85c739;
-}
-
-.badflag {
-  color: #d9534f;
-}
-
-.tutor-link {
-  padding: 0 2px;
-}
-
-/*File upload button*/
-.btn-file {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    background: white;
-    cursor: inherit;
-    display: block;
-}
-
-/*sidebar*/
-textarea {
-  resize: vertical;
-  overflow: auto;
+thead {
+  background-color: #9C2742;
+  color: white;
 }
 
 @media screen and (max-width: 320px) {
@@ -155,88 +104,6 @@ textarea {
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-/*graphs*/
-
-.bar {
-  fill: steelblue;
-}
-
-.axis text {
-  font: 10px sans-serif;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-donut-chart.x.axis path {
-  display: none;
-}
-
-.btext {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
-}
-
-donut-chart {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-activity, donut {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-donut text {
-  fill: white;
-  font: 12px sans-serif;
-}
-
-.donutTitle {
-  fill: black;
-}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.circle {
-  fill: steelblue;
-}
-
-.timeTooltip {
-  position: absolute; 
-  text-align: center; 
-  width: 120px;  
-  height: 30px;   
-  padding: 2px; 
-  font: 12px sans-serif;  
-  background: white; 
-  border: 1px solid #b2b2b2;
-  border-radius: 8px;
-}
-
-.donutTooltip {
-  position: absolute; 
-  text-align: center; 
-  width: 120px;  
-  height: 18px;   
-  padding: 2px; 
-  font: 12px sans-serif;  
-  background: white; 
-  border: 1px solid #b2b2b2;
-
 }
 
 footer {
@@ -271,16 +138,12 @@ footer {
   select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"] { font-size: 16px; }
 }
 
-@media print {
-body {-webkit-print-color-adjust: exact;}
+body {
+  background-color: #F3F3F3
 }
 
-.tutor-box {
-  background-color: black;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
+@media print {
+body {-webkit-print-color-adjust: exact;}
 }
 
 .ready {
@@ -302,4 +165,8 @@ body {-webkit-print-color-adjust: exact;}
 
 .empty {
   background-color: #cd4d52;
+}
+
+.btn-link {
+  color: #6290C3;
 }

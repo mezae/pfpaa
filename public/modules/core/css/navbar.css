@@ -50,16 +50,16 @@
 	position: relative;
 	display: table-cell;
 	width: 60px;
-	height: 36px;
+	height: 40px;
 	text-align: center;
 	vertical-align: middle;
 }
 
 .main-menu {
-	background:#fbfbfb;
-	border-right:1px solid #e5e5e5;
+	background:#f4f4f4;
+	border-left:1px solid #e5e5e5;
 	position:absolute;
-	top:10px;
+	top:0;
 	bottom:0;
 	height:100%;
 	right:0;
@@ -88,23 +88,22 @@
 }
 
 .main-menu li>a {
-position:relative;
-display:table;
-border-collapse:collapse;
-border-spacing:0;
-color:#999;
- font-family: arial;
-font-size: 14px;
-text-decoration: none;
--webkit-transform: translateZ(0) scale(1,1);
--moz-transform: translateZ(0) scale(1,1);
--o-transform: translateZ(0) scale(1,1);
--ms-transform: translateZ(0) scale(1,1);
-transform: translateZ(0) scale(1,1);
--webkit-transition: all .1s linear;
--moz-transition: all .1s linear;
--o-transition: all .1s linear;
-transition: all .1s linear;
+	position:relative;
+	display:table;
+	border-collapse:collapse;
+	border-spacing:0;
+	color:#999;
+	font-size: 14px;
+	text-decoration: none;
+	-webkit-transform: translateZ(0) scale(1,1);
+	-moz-transform: translateZ(0) scale(1,1);
+	-o-transform: translateZ(0) scale(1,1);
+	-ms-transform: translateZ(0) scale(1,1);
+	transform: translateZ(0) scale(1,1);
+	-webkit-transition: all .1s linear;
+	-moz-transition: all .1s linear;
+	-o-transition: all .1s linear;
+	transition: all .1s linear;
 }
 
 .main-menu .nav-icon {
@@ -127,7 +126,7 @@ width:150px;
 .main-menu>ul.logout {
 position:absolute;
 left:0;
-bottom:10px;
+bottom:0;
 }
 
 .no-touch .scrollable.hover {
@@ -137,10 +136,6 @@ overflow-y:hidden;
 .no-touch .scrollable.hover:hover {
 overflow-y:auto;
 overflow:visible;
-}
-
-a:hover,a:focus {
-text-decoration:none;
 }
 
 .navi {
@@ -159,5 +154,5 @@ padding:0;
 
 .main-menu li:hover>a,.navi.main-menu li.active>a,.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,.dashboard-page nav.dashboard-menu ul li.active a {
 color:#fff;
-background-color:#5fa2db;
+background-color:#9C2742;
 }

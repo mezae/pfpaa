@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', '$state', '$location', '$modal', 'Authentication', 'socket',
-    function($scope, $state, $location, $modal, Authentication, socket) {
+angular.module('core').controller('HeaderController', ['$scope', '$state', '$location', '$modal', 'Authentication',
+    function($scope, $state, $location, $modal, Authentication) {
         $scope.authentication = Authentication;
 
         $scope.isAdmin = function() {
@@ -47,52 +47,11 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', '$loc
             if (page === 'command') {
                 $modal.open({
                     templateUrl: 'modules/core/views/adminTutorial.html',
-                    controller: 'AdminModalController',
+                    controller: 'ModalInstanceCtrl',
                     backdrop: 'static'
                 });
             }
         };
-
-    }
-])
-
-.controller('AdminModalController', ['$scope', '$modalInstance', '$filter', 'Authentication', 'Users',
-
-    function($scope, $modalInstance, $filter, Authentication, Users) {
-
-        function init() {
-            $scope.user = Authentication.user;
-            $scope.dueDate = $filter('date')($scope.user.due, 'MM/dd/yy');
-        }
-
-        $scope.saveDueDate = function() {
-            $scope.user.due = $scope.dueDate;
-            var user = new Users($scope.user);
-            user.$update(function(response) {
-                Authentication.user = response;
-                init();
-            }, function(response) {
-                console.log(response.data.message);
-            });
-        };
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = true;
-        };
-
-        $scope.minDate = new Date();
-
-        $scope.dateOptions = {
-            showWeeks: false
-        };
-
-        $scope.exit = function() {
-            $modalInstance.close();
-        };
-
-        init();
 
     }
 ])

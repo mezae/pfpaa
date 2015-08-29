@@ -56,7 +56,7 @@
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-	  ga('create', 'UA-60041517-1', 'auto');
+	  ga('create', 'UA-60041517-3', 'auto');
 	  ga('send', 'pageview');
 	</script>
 
@@ -66,11 +66,9 @@
 	</script>
 
 	<!--Application JavaScript Files-->
-	<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
 	{% if process.env.NODE_ENV !== 'development' %}
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 	{% endif %}
 	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
 

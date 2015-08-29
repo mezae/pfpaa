@@ -1,18 +1,27 @@
-<div>
-	<button type="button" class="btn btn-sm btn-link pull-right closeModal badflag" ng-click="exitModal()">
-		<i class="glyphicon glyphicon-remove"></i>
-	</button>
-</div>
-<div class="modal-body candidate-modal" id="top">
-	
+<div class="modal-header" id="top">
 	<div class="row">
+
+		<button type="button" class="btn btn-sm btn-link closeModal" ng-click="exitModal()">
+			<i class="glyphicon glyphicon-remove"></i>
+		</button>
+
 		<div class="col-md-4 col-md-offset-4 text-center">
 			<img ng-src="{{candidate.photo}}" alt="{{candidate.prep_name}}" class="img-responsive candidate-photo">
 		</div>
 		<div class="col-md-12">
-			 <p class="text-center"><strong>{{candidate.prep_name}}</strong></p>
-			 <p ng-show="!editCandidate"><strong>Bio:</strong> {{candidate.bio}}</p>
-			 <p ng-show="!editCandidate"><strong>Statement:</strong> {{candidate.statement}}</p>
+			<div class="text-center"><strong>{{candidate.prep_name}}</strong></div>
+		</div>
+	</div>
+</div>
+<div class="modal-body candidate-modal" id="top">
+	
+	<div class="row">
+		
+		<div class="col-md-12">
+			 
+			 <p ng-show="!editCandidate"><strong>Bio: </strong><span class="edited" ng-bind-html="candidate.bio"></span></p>
+			 <p ng-show="!editCandidate"><strong>Statement: </strong><span class="edited" ng-bind-html="candidate.statement"></span></p>
+
 			 <form name="candidateForm" ng-show="editCandidate" novalidate>
 				<fieldset>
 					<div class="form-group">

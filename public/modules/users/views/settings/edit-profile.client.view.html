@@ -10,11 +10,6 @@
 			<fieldset>
 
 				<div class="form-group">
-					<label for="agency" ng-class="user.agency ? 'control-label': 'sr-only'">Agency</label>
-					<input type="text" id="agency" name="agency" class="profile form-control" data-ng-model="user.agency" readonly>
-				</div>
-
-				<div class="form-group">
 					<label for="contact" ng-class="user.contact ? 'control-label': 'sr-only'">Name</label>
 					<input type="text" id="contact" name="contact" class="profile form-control" data-ng-model="user.contact" placeholder="full name" required>
 				</div>
@@ -27,21 +22,6 @@
 				<div class="form-group">
 					<label for="tel" ng-class="user.phone ? 'control-label': 'sr-only'">Phone Number</label>
 					<input type="tel" id="tel" name="tel" class="profile form-control" ui-mask="(999) 999-9999" data-ng-model="user.phone" required>
-				</div>
-
-				<div class="form-group">
-					<label for="address" ng-class="user.address ? 'control-label': 'sr-only'">Address</label>
-					<input type="text" id="address" name="address" class="profile form-control" data-ng-model="user.address" placeholder="mailing address" required>
-				</div>
-
-				<div class="form-group">
-					<label for="city" ng-class="user.city ? 'control-label': 'sr-only'">City</label>
-					<input type="text" id="city" name="city" class="profile form-control" data-ng-model="user.city" placeholder="city" required>
-				</div>
-
-				<div class="form-group">
-					<label for="zip" ng-class="user.zip ? 'control-label': 'sr-only'">Zip Code</label>
-					<input type="number" id="zip" name="zip" class="profile form-control" data-ng-model="user.zip" placeholder="zip code" required>
 				</div>
 
 				<div class="text-center form-group">

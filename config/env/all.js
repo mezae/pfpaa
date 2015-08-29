@@ -28,17 +28,11 @@ module.exports = {
                 'public/lib/angular-ui-router/release/angular-ui-router.js',
                 'public/lib/angular-ui-utils/ui-utils.js',
                 'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-                'public/lib/d3/d3.js',
                 'public/lib/lodash/lodash.js',
-                'public/lib/angular-socket-io/socket.js',
-                'public/lib/textAngular/dist/textAngular.min.js',
-                'public/lib/textAngular/dist/textAngular-rangy.min.js',
                 'public/lib/textAngular/dist/textAngular.min.js',
                 'public/lib/textAngular/dist/textAngular-rangy.min.js',
                 'public/lib/ng-file-upload/ng-file-upload.js',
                 'public/lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
-                'public/lib/lz-string/libs/lz-string.min.js',
-                'public/lib/lz-string/libs/lz-string.min.js',
                 'public/lib/papaparse/papaparse.js'
             ]
         },

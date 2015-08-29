@@ -10,6 +10,10 @@
 		</div>
 
 		<div class="row" ng-show="user.ballot">
+			<div class="col-md-12">
+				<p ng-if="user.ballot.length > 6">Please pick your top six candidates and remove the rest.</p>
+			</div>
+
 			<div ng-repeat="cp in candidates" ng-if="user.ballot.indexOf(cp._id) > -1">
 			  <div class="col-xs-6 col-sm-4 col-md-4">
 			    <div class="thumbnail">
