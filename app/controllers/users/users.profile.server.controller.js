@@ -9,27 +9,18 @@ var _ = require('lodash'),
     passport = require('passport'),
     User = mongoose.model('User'),
     Article = mongoose.model('Article');
-var fs = require('fs');
-var azip = require('jszip');
-var lz = require('lz-string');
 
-//Allows admin access to all community partner accounts
+//Allows admin access to all submitted ballots
 exports.list = function(req, res) {
-    if (req.user.role === 'admin') {
-        User.find({}, 'username ballot').sort('username').exec(function(err, users) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
-                res.json(users);
-            }
-        });
-    } else {
-        return res.status(403).send({
-            message: 'User is not authorized'
-        });
-    }
+    User.find({status: 1}, '-_id ballot').exec(function(err, users) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(users);
+        }
+    });
 };
 
 //Allows admin access to individual community partner accounts
@@ -117,7 +108,7 @@ exports.resetData = function(req, res) {
             });
         } else {
             Article.remove({}, function() {
-                console.log('Deleted all letters');
+                console.log('Deleted all Candidates');
             });
             res.json(user);
         }

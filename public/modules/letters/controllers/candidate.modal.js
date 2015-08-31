@@ -16,7 +16,7 @@ angular.module('letters').controller('CandidateModalCtrl', ['$sce', '$http', '$w
 
         //Allow user to delete selected partner and all associated recipients
         $scope.deleteAgency = function(selected) {
-            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.name + '.');
+            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.first_name + ' ' + selected.last_name + '.');
             if (confirmation === 'DELETE') {
                 $http.delete('/articles/' + selected._id).success(function(response) {
                     candidates.all.splice($scope.index, 1);

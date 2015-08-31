@@ -1,0 +1,15 @@
+.agency-box {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #ccc;
+	padding: 20px 1px;
+  display: block;
+  margin-bottom: 20px;
+  line-height: 1.42857143;
+  min-height: 92px;
+  border-radius: 4px;
+  transition: border .2s ease-in-out;
+  -o-transition: border .2s ease-in-out;
+  -webkit-transition: border .2s ease-in-out;
+  -moz-transition: border .2s ease-in-out;
+}

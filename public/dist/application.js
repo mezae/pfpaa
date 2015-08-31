@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
     // Init module configuration options
     var applicationModuleName = 'meanww';
-    var applicationModuleVendorDependencies = ['ngResource', 'ngCookies', 'ngAnimate', 'ngTouch', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.utils', 'textAngular', 'ngFileUpload', 'dndLists'];
+    var applicationModuleVendorDependencies = ['ngResource', 'ngCookies', 'ngAnimate', 'ngTouch', 'ui.router', 'ui.bootstrap', 'ui.utils', 'textAngular', 'ngFileUpload', 'dndLists', 'vcRecaptcha'];
 
     // Add a new vertical module
     var registerModule = function(moduleName, dependencies) {
@@ -229,7 +229,7 @@ angular.module('letters').controller('CandidateModalCtrl', ['$sce', '$http', '$w
 
         //Allow user to delete selected partner and all associated recipients
         $scope.deleteAgency = function(selected) {
-            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.name + '.');
+            var confirmation = $window.prompt('Please type DELETE to remove ' + selected.first_name + ' ' + selected.last_name + '.');
             if (confirmation === 'DELETE') {
                 $http.delete('/articles/' + selected._id).success(function(response) {
                     candidates.all.splice($scope.index, 1);
@@ -639,10 +639,8 @@ angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$a
         };
 
         $scope.gotoTop = function() {
-          // set the location.hash to the id of
-          // the element you wish to scroll to.
-          $location.hash('top');
-          $anchorScroll();
+            $location.hash('top');
+            $anchorScroll();
         };
 
         $scope.exitModal = function() {
@@ -659,9 +657,7 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
         $scope.user = Authentication.user;
         if (!$scope.user || $scope.user.role === 'user') $location.path('/').replace();
 
-        $scope.users = Agencies.query({
-            role: 'admin'
-        });
+        $scope.users = Agencies.query();
 
         $scope.viewData = function(tab) {
             $scope.setting = tab;
@@ -696,54 +692,6 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
             $scope.credentials = {};
         };
 
-        $scope.viewNotifications = function() {
-            $scope.setting = 'notify';
-            $scope.permission = Notification.permission === 'granted';
-        };
-
-        //Helps create a downloadable csv version of the tracking form
-        $scope.downloadCSV = function() {
-            $scope.error = null;
-            $scope.total = null;
-            if ($scope.calendar.startDate && $scope.calendar.endDate) {
-                if ($scope.calendar.startDate > $scope.calendar.endDate) {
-                    $scope.error = 'Start date must come before or be equal to end date.';
-                } else {
-                    var headers = ['track', 'type', 'name', 'age', 'gender', 'gift'];
-                    headers.push('flagged');
-                    var csvString = headers.join(',') + '\r\n';
-                    var Recipients = Articles.query({
-                        start: $scope.calendar.startDate,
-                        end: $scope.calendar.endDate
-                    }, function() {
-                        $scope.total = Recipients.length;
-                        _.forEach(Recipients, function(letter) {
-                            var type = letter.track.charAt(3);
-                            letter.type = type === 'C' ? 'child' : (type === 'T' ? 'teen' : 'senior');
-                            _.forEach(headers, function(key) {
-                                var line = letter[key];
-                                if (key === 'gift' && _.indexOf(letter[key], ',')) {
-                                    line = '"' + letter[key] + '"';
-                                }
-                                csvString += line + ',';
-                            });
-                            csvString += '\r\n';
-                        });
-
-                        var date = $filter('date')(new Date(), 'MM-dd');
-                        $scope.fileName = ('WishesToSF_' + date + '.csv');
-                        var blob = new Blob([csvString], {
-                            type: 'text/csv;charset=UTF-8'
-                        });
-                        $scope.url = $window.URL.createObjectURL(blob);
-                    });
-                }
-            } else {
-                $scope.error = 'Please enter a start date and an end date.';
-            }
-
-        };
-
         //Allows admin to create new accounts
         function signup(credentials) {
             $http.post('/auth/newadmin', credentials).success(function(response) {
@@ -761,19 +709,6 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
         $scope.saveAdmin = function() {
             console.log($scope.credentials);
             signup($scope.credentials);
-        };
-
-        $scope.allowNotifications = function() {
-            if (!("Notification" in window)) {
-                alert("This browser does not support desktop notification");
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission(function(permission) {
-                    if (permission === 'granted') {
-                        $scope.permission = true;
-                        var notification = new Notification('Hi there!');
-                    }
-                });
-            }
         };
 
         $scope.resetAll = function() {
@@ -856,11 +791,11 @@ angular.module('letters').controller('ManageAdminsController', ['$scope', '$wind
 
 angular.module('letters')
 
-.controller('SummaryController', ['$scope', '$window', '$location', '$filter', 'Authentication', 'Agencies', 'Articles',
-    function($scope, $window, $location, $filter, Authentication, Agencies, Articles) {
+.controller('SummaryController', ['$scope', '$location', 'Authentication', 'Agencies', 'Articles',
+    function($scope, $location, Authentication, Agencies, Articles) {
         $scope.authentication = Authentication;
 
-        if (!$scope.authentication.user) $location.path('/');
+        if (!$scope.authentication.user || $scope.authentication.user.role === 'user') $location.path('/').replace();
 
         Articles.query(function(candidates) {
 
@@ -871,13 +806,13 @@ angular.module('letters')
                 var count = _.countBy(votes);
 
                 $scope.tally = [];
-                _.forEach(count, function(c, g) {
-                    if (g) {
+                _.forEach(count, function(count, id) {
+                    if (id) {
                         $scope.tally.push({
-                            candidateID: _.result(_.find(candidates, function(chr) {
-                                            return chr._id === g;
+                            candidateID: _.result(_.find(candidates, function(candidate) {
+                                            return candidate._id === id;
                                         }), 'prep_name'),
-                            count: c
+                            count: count
                         });
                     }
                 });
@@ -1041,23 +976,27 @@ angular.module('users').config(['$stateProvider',
 ]);
 'use strict';
 
-angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$state', 'Authentication',
-    function($scope, $http, $state, Authentication) {
+angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$state', 'Authentication', 'vcRecaptchaService',
+    function($scope, $http, $state, Authentication, vcRecaptchaService) {
         $scope.user = Authentication.user;
 
         // If user is signed in, then redirect to appropriate page
         if ($scope.user) $state.go('command');
 
         $scope.signin = function(form) {
-            $http.post('/auth/signin', $scope.credentials).success(function(response) {
-                // If successful we assign the response to the global user model
-                Authentication.user = response;
-                $scope.user = Authentication.user;
-                // And redirect to appropriate page
-                $scope.user.status === 0 ? $state.go('command') : $state.go('thanks');
-            }).error(function(response) {
-                $scope.error = response.message;
-            });
+            $scope.credentials.rcap = vcRecaptchaService.getResponse();
+            if ($scope.credentials.rcap) {
+                $http.post('/auth/signin', $scope.credentials).success(function(response) {
+                    // If successful we assign the response to the global user model
+                    Authentication.user = response;
+                    $scope.user = Authentication.user;
+                    // And redirect to appropriate page
+                    $scope.user.status === 0 ? $state.go('command') : $state.go('thanks');
+                }).error(function(response) {
+                    grecaptcha.reset();
+                    $scope.error = response.message;
+                });
+            }
         };
 
     }

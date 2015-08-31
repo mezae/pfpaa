@@ -90,3 +90,30 @@
   color: #69D987;
 }
 
+.rc-imageselect {
+  width: 80%;
+  margin: auto;
+}
+
+@media (max-width: 1200px) {
+  .rc-imageselect {
+    width: 100%;
+    margin: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .rc-imageselect {
+    -webkit-transform:scale(0.77);
+    -moz-transform:scale(0.77);
+    -ms-transform:scale(0.77);
+    -o-transform:scale(0.77);
+    transform: scale(0.77);
+    -webkit-transform-origin:0 0;
+    -moz-transform-origin:0 0;
+    -ms-transform-origin:0 0;
+    -o-transform-origin:0 0;
+    transform-origin:0 0;
+  }
+}
+

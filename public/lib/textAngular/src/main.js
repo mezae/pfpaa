@@ -88,13 +88,14 @@ textAngular.directive("textAngular", [
 			require: '?ngModel',
 			scope: {},
 			restrict: "EA",
+			priority: 2, // So we override validators correctly
 			link: function(scope, element, attrs, ngModel){
 				// all these vars should not be accessable outside this directive
 				var _keydown, _keyup, _keypress, _mouseup, _focusin, _focusout,
 					_originalContents, _toolbars,
 					_serial = (attrs.serial) ? attrs.serial : Math.floor(Math.random() * 10000000000000000),
 					_taExecCommand, _resizeMouseDown, _updateSelectedStylesTimeout;
-				
+
 				scope._name = (attrs.name) ? attrs.name : 'textAngularEditor' + _serial;
 
 				var oneEvent = function(_element, event, action){
@@ -118,7 +119,7 @@ textAngular.directive("textAngular", [
 							scope['$redoTaBindtaTextElement' + _serial]();
 						}else{
 							// catch errors like FF erroring when you try to force an undo with nothing done
-							_taExecCommand(command, false, opt);
+							_taExecCommand(command, false, opt, scope.defaultTagAttributes);
 							if(isSelectableElementTool){
 								// re-apply the selectable tool events
 								scope['reApplyOnSelectorHandlerstaTextElement' + _serial]();
@@ -134,6 +135,14 @@ textAngular.directive("textAngular", [
 				if(attrs.taFocussedClass)			scope.classes.focussed = attrs.taFocussedClass;
 				if(attrs.taTextEditorClass)			scope.classes.textEditor = attrs.taTextEditorClass;
 				if(attrs.taHtmlEditorClass)			scope.classes.htmlEditor = attrs.taHtmlEditorClass;
+				if(attrs.taDefaultTagAttributes){
+					try	{
+						//	TODO: This should use angular.merge to enhance functionality once angular 1.4 is required
+						angular.extend(scope.defaultTagAttributes, angular.fromJson(attrs.taDefaultTagAttributes));
+					} catch (error) {
+						$log.error(error);
+					}
+				}
 				// optional setup functions
 				if(attrs.taTextEditorSetup)			scope.setup.textEditorSetup = scope.$parent.$eval(attrs.taTextEditorSetup);
 				if(attrs.taHtmlEditorSetup)			scope.setup.htmlEditorSetup = scope.$parent.$eval(attrs.taHtmlEditorSetup);
@@ -252,17 +261,24 @@ textAngular.directive("textAngular", [
 								x: Math.max(0, startPosition.width + (event.clientX - startPosition.x)),
 								y: Math.max(0, startPosition.height + (event.clientY - startPosition.y))
 							};
-							
-							if(event.shiftKey){
-								// keep ratio
+
+							// DEFAULT: the aspect ratio is not locked unless the Shift key is pressed.
+							//
+							// attribute: ta-resize-force-aspect-ratio -- locks resize into maintaing the aspect ratio
+							var bForceAspectRatio = (attrs.taResizeForceAspectRatio !== undefined);
+							// attribute: ta-resize-maintain-aspect-ratio=true causes the space ratio to remain locked
+							// unless the Shift key is pressed
+							var bFlipKeyBinding = attrs.taResizeMaintainAspectRatio;
+							var bKeepRatio =  bForceAspectRatio || (bFlipKeyBinding && !event.shiftKey);
+							if(bKeepRatio) {
 								var newRatio = pos.y / pos.x;
 								pos.x = ratio > newRatio ? pos.x : pos.y / ratio;
 								pos.y = ratio > newRatio ? pos.x * ratio : pos.y;
 							}
-							el = angular.element(_el);
-							el.attr('height', Math.max(0, pos.y));
-							el.attr('width', Math.max(0, pos.x));
-							
+							var el = angular.element(_el);
+							el.css('height', Math.round(Math.max(0, pos.y) + 'px'));
+							el.css('width', Math.round(Math.max(0, pos.x) + 'px'));
+
 							// reflow the popover tooltip
 							scope.reflowResizeOverlay(_el);
 						};
@@ -277,6 +293,7 @@ textAngular.directive("textAngular", [
 						event.preventDefault();
 					};
 
+					scope.displayElements.resize.anchors[3].off('mousedown');
 					scope.displayElements.resize.anchors[3].on('mousedown', _resizeMouseDown);
 
 					scope.reflowResizeOverlay(_el);
@@ -295,22 +312,24 @@ textAngular.directive("textAngular", [
 					'id': 'taHtmlElement' + _serial,
 					'ng-show': 'showHtml',
 					'ta-bind': 'ta-bind',
-					'ng-model': 'html'
+					'ng-model': 'html',
+					'ng-model-options': element.attr('ng-model-options')
 				});
 				scope.displayElements.text.attr({
 					'id': 'taTextElement' + _serial,
 					'contentEditable': 'true',
 					'ta-bind': 'ta-bind',
-					'ng-model': 'html'
+					'ng-model': 'html',
+					'ng-model-options': element.attr('ng-model-options')
 				});
 				scope.displayElements.scrollWindow.attr({'ng-hide': 'showHtml'});
 				if(attrs.taDefaultWrap) scope.displayElements.text.attr('ta-default-wrap', attrs.taDefaultWrap);
-				
+
 				if(attrs.taUnsafeSanitizer){
 					scope.displayElements.text.attr('ta-unsafe-sanitizer', attrs.taUnsafeSanitizer);
 					scope.displayElements.html.attr('ta-unsafe-sanitizer', attrs.taUnsafeSanitizer);
 				}
-				
+
 				// add the main elements to the origional element
 				scope.displayElements.scrollWindow.append(scope.displayElements.text);
 				element.append(scope.displayElements.scrollWindow);
@@ -343,14 +362,14 @@ textAngular.directive("textAngular", [
 						}
 					});
 				}
-				
+
 				if(attrs.taPaste){
 					scope._pasteHandler = function(_html){
 						return $parse(attrs.taPaste)(scope.$parent, {$html: _html});
 					};
 					scope.displayElements.text.attr('ta-paste', '_pasteHandler($html)');
 				}
-				
+
 				// compile the scope with the text and html elements only - if we do this with the main element it causes a compile loop
 				$compile(scope.displayElements.scrollWindow)(scope);
 				$compile(scope.displayElements.html)(scope);
@@ -376,7 +395,15 @@ textAngular.directive("textAngular", [
 				};
 				scope.endAction = function(){
 					scope._actionRunning = false;
-					if(_savedSelection) $window.rangy.removeMarkers(_savedSelection);
+					if(_savedSelection){
+						if(scope.showHtml){
+							scope.displayElements.html[0].focus();
+						}else{
+							scope.displayElements.text[0].focus();
+						}
+						// $window.rangy.restoreSelection(_savedSelection);
+						$window.rangy.removeMarkers(_savedSelection);
+					}
 					_savedSelection = false;
 					scope.updateSelectedStyles();
 					// only update if in text or WYSIWYG mode
@@ -410,11 +437,11 @@ textAngular.directive("textAngular", [
 				};
 				scope.displayElements.html.on('blur', _focusout);
 				scope.displayElements.text.on('blur', _focusout);
-				
+
 				scope.displayElements.text.on('paste', function(event){
 					element.triggerHandler('paste', event);
 				});
-				
+
 				// Setup the default toolbar tools, this way allows the user to add new tools like plugins.
 				// This is on the editor for future proofing if we find a better way to do this.
 				scope.queryFormatBlockState = function(command){
@@ -467,19 +494,13 @@ textAngular.directive("textAngular", [
 						}
 						scope.displayElements.forminput.val(ngModel.$viewValue);
 						// if the editors aren't focused they need to be updated, otherwise they are doing the updating
-						/* istanbul ignore else: don't care */
-						if(!scope._elementSelectTriggered){
-							// catch model being null or undefined
-							scope.html = ngModel.$viewValue || '';
-						}
+						scope.html = ngModel.$viewValue || '';
 					};
 					// trigger the validation calls
-					var _validity = function(value){
-						if(attrs.required) ngModel.$setValidity('required', !(!value || value.trim() === ''));
-						return value;
+					if(element.attr('required')) ngModel.$validators.required = function(modelValue, viewValue) {
+						var value = modelValue || viewValue;
+						return !(!value || value.trim() === '');
 					};
-					ngModel.$parsers.push(_validity);
-					ngModel.$formatters.push(_validity);
 				}else{
 					// if no ngModel then update from the contents of the origional html.
 					scope.displayElements.forminput.val(_originalContents);
@@ -690,8 +711,8 @@ textAngular.service('textAngularManager', ['taToolExecuteAction', 'taTools', 'ta
 					sendKeyCommand: function(event){
 						// we return true if we applied an action, false otherwise
 						var result = false;
-						if(event.ctrlKey || event.metaKey) angular.forEach(taTools, function(tool, name){
-							if(tool.commandKeyCode && tool.commandKeyCode === event.which){
+						if(event.ctrlKey || event.metaKey || event.specialKey) angular.forEach(taTools, function(tool, name){
+							if(tool.commandKeyCode && (tool.commandKeyCode === event.which || tool.commandKeyCode === event.specialKey)){
 								for(var _t = 0; _t < _toolbars.length; _t++){
 									if(_toolbars[_t].tools[name] !== undefined){
 										taToolExecuteAction.call(_toolbars[_t].tools[name], scope);
@@ -757,7 +778,7 @@ textAngular.service('textAngularManager', ['taToolExecuteAction', 'taTools', 'ta
 										break;
 									}
 								}
-								if(result) break; 
+								if(result) break;
 							}
 						}
 						return result;
@@ -881,6 +902,20 @@ textAngular.service('textAngularManager', ['taToolExecuteAction', 'taTools', 'ta
 				/* istanbul ignore else: phase catch */
 				if(!editors[name].scope.$$phase) editors[name].scope.$digest();
 			}else throw('textAngular Error: No Editor with name "' + name + '" exists');
+		},
+		// this is used by taBind to send a key command in response to a special key event
+		sendKeyCommand: function(scope, event){
+			angular.forEach(editors, function(_editor){
+				/* istanbul ignore else: if nothing to do, do nothing */
+				if (_editor.editorFunctions.sendKeyCommand(event)){
+					/* istanbul ignore else: don't run if already running */
+					if(!scope._bUpdateSelectedStyles){
+						scope.updateSelectedStyles();
+					}
+					event.preventDefault();
+					return false;
+				}
+			});
 		}
 	};
 }]);
@@ -919,13 +954,13 @@ textAngular.directive('textAngularToolbar', [
 						toolElement = angular.element(toolDefinition.display);
 					}
 					else toolElement = angular.element("<button type='button'>");
-					
+
 					if(toolDefinition && toolDefinition["class"]) toolElement.addClass(toolDefinition["class"]);
 					else toolElement.addClass(scope.classes.toolbarButton);
-					
+
 					toolElement.attr('name', toolScope.name);
 					// important to not take focus from the main text/html entry
-					toolElement.attr('unselectable', 'on');
+					toolElement.attr('ta-button', 'ta-button');
 					toolElement.attr('ng-disabled', 'isDisabled()');
 					toolElement.attr('tabindex', '-1');
 					toolElement.attr('ng-click', 'executeAction()');
@@ -934,14 +969,6 @@ textAngular.directive('textAngularToolbar', [
 					if (toolDefinition && toolDefinition.tooltiptext) {
 						toolElement.attr('title', toolDefinition.tooltiptext);
 					}
-
-					toolElement.on('mousedown', function(e, eventData){
-						/* istanbul ignore else: this is for catching the jqLite testing*/
-						if(eventData) angular.extend(e, eventData);
-						// this prevents focusout from firing on the editor when clicking toolbar buttons
-						e.preventDefault();
-						return false;
-					});
 					if(toolDefinition && !toolDefinition.display && !toolScope._display){
 						// first clear out the current contents if any
 						toolElement[0].innerHTML = '';

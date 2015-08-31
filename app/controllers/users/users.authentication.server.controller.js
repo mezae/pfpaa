@@ -10,6 +10,7 @@ var _ = require('lodash'),
     async = require('async'),
     User = mongoose.model('User'),
     Letter = mongoose.model('Article');
+var https = require('https');
 
 exports.addAdmin = function(req, res) {
     // Init Variables
@@ -124,37 +125,52 @@ exports.signups = function(req, res) {
  * Signin after passport authentication
  */
 exports.signin = function(req, res, next) {
-    if (req.body.password === undefined) {
-        req.body.password = process.env.USER_PW;
-    }
-    passport.authenticate('local', function(err, user, info) {
-        if (err || !user) {
-            res.status(400).send(info);
-        } else {
-            // Remove sensitive data before login
-            user.provider = undefined;
-            user.password = undefined;
-            user.salt = undefined;
-            user.rating = undefined;
-            user.created = undefined;
+    var options = {
+      host: 'www.google.com',
+      path: '/recaptcha/api/siteverify' + '?secret=' + process.env.RCAP_KEY + '&response=' + req.body.rcap,
+      method: 'POST'
+    };
 
-            if (user.role === 'admin') {
-                user.username = undefined;
-                user.children = undefined;
-                user.teens = undefined;
-                user.seniors = undefined;
-                user.updated = undefined;
-            }
-
-            req.login(user, function(err) {
-                if (err) {
-                    res.status(400).send(err);
-                } else {
-                    res.json(user);
+    var requ = https.request(options, function(resp) {
+        resp.on('data', function (chunk) {
+            if (JSON.stringify(JSON.parse(chunk)) === JSON.stringify({ success: true })) {
+                if (req.body.password === undefined) {
+                    req.body.password = process.env.USER_PW;
                 }
-            });
-        }
-    })(req, res, next);
+                passport.authenticate('local', function(err, user, info) {
+                    if (err || !user) {
+                        res.status(400).send(info);
+                    } else {
+                        // Remove sensitive data before login
+                        user.provider = undefined;
+                        user.password = undefined;
+                        user.salt = undefined;
+                        user.rating = undefined;
+                        user.created = undefined;
+
+                        req.login(user, function(err) {
+                            if (err) {
+                                res.status(400).send(err);
+                            } else {
+                                res.json(user);
+                            }
+                        });
+                    }
+                })(req, res, next);
+            }
+            else {
+                res.status(400).send('recaptcha error');
+            }
+        });
+    });
+
+    requ.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+        res.status(400).send('whoa error');
+    });
+
+    requ.end();
+   
 };
 
 /**

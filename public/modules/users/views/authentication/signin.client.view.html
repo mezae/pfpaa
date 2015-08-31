@@ -13,12 +13,15 @@
 					<input type="text" id="username" name="username" class="profile form-control input-lg text-center" data-ng-model="credentials.username" placeholder="Enter your voter ID here">
 					<input type="password" id="password" name="password" ng-if="credentials.username.indexOf('admin') > -1" class="profile form-control input-lg text-center" data-ng-model="credentials.password" placeholder="password">
 				</div>
+				<div class="form-group">
+					<div vc-recaptcha key="'6Ld14gsTAAAAAIKRXVzIKzHYYYL-RD4rwtPPWiBx'" class="rc-imageselect"></div>
+				</div>
 
 				<div class="text-center form-group">
 					<button type="submit" class="ebtn btn-login btn-block">Login</button>
 				</div>
 				<div class="forgot-password text-center">
-					<a href="/#!/password/forgot" ng-show="credentials.username.indexOf('admin') > -1">forgot your password?</a>
+					<a href="/#!/password/forgot" ng-if="credentials.username.indexOf('admin') > -1">forgot your password?</a>
 					<p ng-hide="credentials.username.indexOf('admin') > -1">If you are having trouble logging in, please contact alumniaffairs@prepforprep.org</p>
 				</div>
 				<div data-ng-show="error" class="text-center text-danger">

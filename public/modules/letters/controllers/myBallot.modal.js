@@ -62,10 +62,8 @@ angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$a
         };
 
         $scope.gotoTop = function() {
-          // set the location.hash to the id of
-          // the element you wish to scroll to.
-          $location.hash('top');
-          $anchorScroll();
+            $location.hash('top');
+            $anchorScroll();
         };
 
         $scope.exitModal = function() {

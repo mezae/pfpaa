@@ -1,3 +1,88 @@
+<a name"1.4.3"></a>
+### 1.4.3 (2015-07-30)
+
+
+#### Bug Fixes
+
+* **textAngular:** Fix image resize broken for chrome ([86072d4b](https://github.com/fraywing/textAngular/commit/86072d4b))
+* **textAngularSetup:** Inorder to fully block Undo or Redo, one must also call event.preventDefault() ([aedc38e4](https://github.com/fraywing/textAngular/commit/aedc38e4))
+* **textAngular:** Fix remove CSSRule-when-no-rules ([0eb2f38](https://github.com/fraywing/textAngular/commit/86072d4b))
+
+#### Features
+
+* **taToolbar:** Update insertVideo to handle youtube link variants ([1372bc1d](https://github.com/fraywing/textAngular/commit/1372bc1d))
+* **test:** Added coverage for 'justifyFull' button. ([72cca334](https://github.com/fraywing/textAngular/commit/72cca334))
+* **textAngularSetup:**
+  * Added taOptions.keyMappings to customize key bindings. ([05546ab4](https://github.com/fraywing/textAngular/commit/05546ab4))
+  * Added taOptions.keyMappings to adjustment the key bindings for Redo, Undo, ... ([de12e3e3](https://github.com/fraywing/textAngular/commit/de12e3e3))
+  * Added a taOptions:forceTextAngularSanitize to verify sanitizer provider. ([ad04836b](https://github.com/fraywing/textAngular/commit/ad04836b))
+  * Added a taOptions:forceTextAngularSanitize to verify sanitizer provider. ([8e642c15](https://github.com/fraywing/textAngular/commit/8e642c15))
+
+#### Breaking Changes
+
+If you were using a different sanitize provider instead of textAngular-sanitize we will now detect this and throw an error.  To eliminate this error set taOptions.forceTextAngularSanitize: false
+
+<a name"1.4.2"></a>
+### 1.4.2 (2015-07-15)
+
+#### Bug Fixes
+
+* **textAngular:** corrected undefined event #796 ([6186ed52](https://github.com/fraywing/textAngular/commit/6186ed52))
+* **taBind:** Reapply selector handles on focus ([f05857e3](https://github.com/fraywing/textAngular/commit/f05857e3))
+* **textAngular:** Fixed resize image issue ([52fb20c0](https://github.com/fraywing/textAngular/commit/52fb20c0))
+* **grunt:** Update javascript path in watch target ([58df955d](https://github.com/fraywing/textAngular/commit/58df955d))
+* **textAngular:**
+  * Fixed test coverage when commonElement is document ([b807423b](https://github.com/fraywing/textAngular/commit/b807423b ))
+  * Fixed corner case when commonElement is document ([dbea6244](https://github.com/fraywing/textAngular/commit/dbea6244))
+  * Use CSS instead of html attributes to resize image. ([a84f6df4](https://github.com/fraywing/textAngular/commit/a84f6df4))
+  * Fix resize image issue ([52fb20c0](https://github.com/fraywing/textAngular/commit/52fb20c0))
+
+#### Features
+
+* **textAngular:** 
+   * Added directives ta-resize-keep-aspect-ratio and ta-resize-maintain-aspect-ratio to control image-resize ([32697058](https://github.com/fraywing/textAngular/commit/32697058))
+   * Added input to the safe element list ([945cfa00](https://github.com/fraywing/textAngular/commit/945cfa00))
+* **textAngularDemo:** Updated the demo to be in synch with this release ([93fd4048](https://github.com/fraywing/textAngular/commit/93fd4048))
+* **globals:** Added aria-hidden to hidden input, to hide it from screen readers ([b49bf814](https://github.com/fraywing/textAngular/commit/b49bf814))
+* **textAngularSetup:** Enhanced toolbar to handle TAB and SHIFT-TAB KEYS. ([8df51fb](https://github.com/fraywing/textAngular/commit/8df51fb))
+* **taToolFunctions:** Create factory for sharable functions ([032611dd](https://github.com/fraywing/textAngular/commit/032611dd))
+
+<a name="1.4.1"></a>
+### 1.4.1 (2015-05-25)
+
+#### Breaking Changes
+
+This changes the structure of the files - all production files are now in the dist folder, this makes where PR's should be done a little more clear.
+
+If you were referencing the src/*.js files they will need to be updated to dist/*js.
+
+#### Bug Fixes
+
+* **taPaste:** Fix the taPaste order s.t. sanitizer is called after paste handler. ([108857f6](http://github.com/fraywing/textAngular/commit/108857f69ac611f970ded65ba5c1207b8a6964d0), closes [#686](http://github.com/fraywing/textAngular/issues/686))
+
+
+<a name="1.4.0"></a>
+## 1.4.0 (2015-05-24)
+
+#### Breaking Changes
+
+The minimum required versions of AngularJS is 1.3 and Rangy is 1.3.
+
+#### Bug Fixes
+
+* **chrome:** Make the matcher for detecting bad chorem tags more lenient ([05fe7a61](http://github.com/fraywing/textAngular/commit/05fe7a61470d41b6533f5220894ec1a3451dc801))
+* **taBind:** Updating while focussed. ([cc6d89be](http://github.com/fraywing/textAngular/commit/cc6d89bee18de5a2666aae075c707ae7aa68cb9f), closes [#38](http://github.com/fraywing/textAngular/issues/38))
+* **taBind.formatters:** Catch unwrapped content ([0cd98dd3](http://github.com/fraywing/textAngular/commit/0cd98dd3115f4e7d09263eeeb0136ec9d2ccaafa), closes [#584](http://github.com/fraywing/textAngular/issues/584))
+* **taBind.keyevents:** Attempted fix for polish character issues ([26226dda](http://github.com/fraywing/textAngular/commit/26226ddaa9f5468977f3a4849e265904ca2fad6a), closes [#518](http://github.com/fraywing/textAngular/issues/518))
+* **taBinde.undomanager:** Fix a bug with redo/undo beyond the borders ([dd023c30](http://github.com/fraywing/textAngular/commit/dd023c30537cd79550de630f7d4360331eb02975), closes [#558](http://github.com/fraywing/textAngular/issues/558))
+
+
+#### Features
+
+* **bootstrap:** Bootstrap is no longer required in bower ([5e7459eb](http://github.com/fraywing/textAngular/commit/5e7459eb03bf66c62d05b8b42225c7b5e1e75da5), closes [#649](http://github.com/fraywing/textAngular/issues/649))
+* **taTools:** Added options for tools in taOptions ([7fb00a02](http://github.com/fraywing/textAngular/commit/7fb00a02993f8c02b09f8a24c3c267b6ba4f8fbd))
+
+
 <a name="1.3.11"></a>
 ### 1.3.11 (2015-03-16)
 

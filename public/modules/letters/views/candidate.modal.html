@@ -1,4 +1,4 @@
-<div class="modal-header" id="top">
+<div class="modal-header">
 	<div class="row">
 
 		<button type="button" class="btn btn-sm btn-link closeModal" ng-click="exitModal()">
@@ -13,11 +13,11 @@
 		</div>
 	</div>
 </div>
-<div class="modal-body candidate-modal" id="top">
+<div class="modal-body candidate-modal">
 	
 	<div class="row">
 		
-		<div class="col-md-12">
+		<div class="col-md-12" id="top">
 			 
 			 <p ng-show="!editCandidate"><strong>Bio: </strong><span class="edited" ng-bind-html="candidate.bio"></span></p>
 			 <p ng-show="!editCandidate"><strong>Statement: </strong><span class="edited" ng-bind-html="candidate.statement"></span></p>

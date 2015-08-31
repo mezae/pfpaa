@@ -7,9 +7,7 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
         $scope.user = Authentication.user;
         if (!$scope.user || $scope.user.role === 'user') $location.path('/').replace();
 
-        $scope.users = Agencies.query({
-            role: 'admin'
-        });
+        $scope.users = Agencies.query();
 
         $scope.viewData = function(tab) {
             $scope.setting = tab;
@@ -44,54 +42,6 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
             $scope.credentials = {};
         };
 
-        $scope.viewNotifications = function() {
-            $scope.setting = 'notify';
-            $scope.permission = Notification.permission === 'granted';
-        };
-
-        //Helps create a downloadable csv version of the tracking form
-        $scope.downloadCSV = function() {
-            $scope.error = null;
-            $scope.total = null;
-            if ($scope.calendar.startDate && $scope.calendar.endDate) {
-                if ($scope.calendar.startDate > $scope.calendar.endDate) {
-                    $scope.error = 'Start date must come before or be equal to end date.';
-                } else {
-                    var headers = ['track', 'type', 'name', 'age', 'gender', 'gift'];
-                    headers.push('flagged');
-                    var csvString = headers.join(',') + '\r\n';
-                    var Recipients = Articles.query({
-                        start: $scope.calendar.startDate,
-                        end: $scope.calendar.endDate
-                    }, function() {
-                        $scope.total = Recipients.length;
-                        _.forEach(Recipients, function(letter) {
-                            var type = letter.track.charAt(3);
-                            letter.type = type === 'C' ? 'child' : (type === 'T' ? 'teen' : 'senior');
-                            _.forEach(headers, function(key) {
-                                var line = letter[key];
-                                if (key === 'gift' && _.indexOf(letter[key], ',')) {
-                                    line = '"' + letter[key] + '"';
-                                }
-                                csvString += line + ',';
-                            });
-                            csvString += '\r\n';
-                        });
-
-                        var date = $filter('date')(new Date(), 'MM-dd');
-                        $scope.fileName = ('WishesToSF_' + date + '.csv');
-                        var blob = new Blob([csvString], {
-                            type: 'text/csv;charset=UTF-8'
-                        });
-                        $scope.url = $window.URL.createObjectURL(blob);
-                    });
-                }
-            } else {
-                $scope.error = 'Please enter a start date and an end date.';
-            }
-
-        };
-
         //Allows admin to create new accounts
         function signup(credentials) {
             $http.post('/auth/newadmin', credentials).success(function(response) {
@@ -109,19 +59,6 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
         $scope.saveAdmin = function() {
             console.log($scope.credentials);
             signup($scope.credentials);
-        };
-
-        $scope.allowNotifications = function() {
-            if (!("Notification" in window)) {
-                alert("This browser does not support desktop notification");
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission(function(permission) {
-                    if (permission === 'granted') {
-                        $scope.permission = true;
-                        var notification = new Notification('Hi there!');
-                    }
-                });
-            }
         };
 
         $scope.resetAll = function() {

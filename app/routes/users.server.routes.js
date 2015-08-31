@@ -14,7 +14,7 @@ module.exports = function(app) {
     app.route('/users').put(users.update);
     app.route('/users/reset').get(users.hasAuthorization('admin'), users.resetData);
 
-    app.route('/agency').get(users.requiresLogin, users.list);
+    app.route('/agency').get(users.hasAuthorization('admin'), users.list);
 
     app.route('/agency/:agencyId')
         .get(users.requiresLogin, users.read)
