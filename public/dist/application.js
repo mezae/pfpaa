@@ -292,8 +292,8 @@ angular.module('letters').controller('CandidateModalCtrl', ['$sce', '$http', '$w
 'use strict';
 /* global _: false */
 
-angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles',
-    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles) {
+angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles', 'Globals',
+    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles, Globals) {
         $scope.user = Authentication.user;
 
         if (!$scope.user) $location.path('/').replace();
@@ -308,13 +308,20 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
         };
 
         $scope.find = function() {
-            $scope.partners = [{
-                username: 'Loading...',
-                role: 'user'
-            }];
-            
-            Articles.query(function(users) {
-                $scope.partners = users;
+            Globals.query(function(settings) {
+                var today = new Date();
+                var due_date = _.result(_.find(settings, function(global) {
+                                    return global.setting_name === 'due_date';
+                                }), 'setting_value');
+                due_date = new Date(due_date);
+                if (today < due_date || $scope.user.role === 'admin') {
+                    Articles.query(function(users) {
+                        $scope.partners = users;
+                    });
+                }
+                else {
+                    $location.path('/thanks').replace();
+                }
             });
         };
 
@@ -652,14 +659,32 @@ angular.module('letters').controller('BallotModalCtrl', ['$http', '$window', '$a
 /* global _: false */
 /* global Notification: false */
 
-angular.module('letters').controller('myController', ['$scope', '$window', '$location', '$filter', '$http', 'Authentication', 'Users', 'Agencies', 'Articles',
-    function($scope, $window, $location, $filter, $http, Authentication, Users, Agencies, Articles) {
+angular.module('letters').controller('myController', ['$scope', '$window', '$location', '$filter', '$http', 'Authentication', 'Users', 'Agencies', 'Articles', 'Globals',
+    function($scope, $window, $location, $filter, $http, Authentication, Users, Agencies, Articles, Globals) {
         $scope.user = Authentication.user;
         if (!$scope.user || $scope.user.role === 'user') $location.path('/').replace();
 
         $scope.users = Agencies.query();
 
         $scope.viewData = function(tab) {
+            if (tab === 'duedate') {
+                Globals.query(function(settings) {
+                    $scope.isActive = false;
+                    $scope.new_global = {
+                        setting_name: 'due_date',
+                        setting_value: null
+                    };
+                    var old_global = _.find(settings, function(global) {
+                                        return global.setting_name === 'due_date';
+                                    });
+                    if (old_global) {
+                        $scope.isActive = true;
+                        $scope.new_global = old_global;
+                    }
+                });
+            }
+
+
             $scope.setting = tab;
 
             $scope.calendar = {
@@ -679,12 +704,25 @@ angular.module('letters').controller('myController', ['$scope', '$window', '$loc
         };
 
         $scope.saveDueDate = function() {
-            var user = new Users($scope.user);
-            user.$update(function(response) {
-                $scope.user = response;
-            }, function(response) {
-                console.log(response.data.message);
-            });
+            if(!$scope.isActive) {
+                $http.post('/globals', $scope.new_global).success(function(response) {
+                    console.log(response.message);
+                }).error(function(response) {
+                    $scope.alert = {
+                        active: true,
+                        type: 'danger',
+                        msg: response.message
+                    };
+                });
+            } else {
+                var global = new Globals($scope.new_global);
+
+                global.$update(function(response) {
+                    console.log(response.message);
+                }, function(response) {
+                    $scope.error = response.data.message;
+                });
+            }
         };
 
         $scope.viewAdmins = function() {
@@ -863,6 +901,20 @@ angular.module('letters').factory('Agencies', ['$resource',
 //             }
 //         });
 //     });
+'use strict';
+
+//Letters service used for communicating with the letters REST endpoints
+angular.module('letters').factory('Globals', ['$resource',
+    function($resource) {
+        return $resource('globals/:globalId/:controller', {
+            globalId: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
+]);
 'use strict';
 
 //Letters service used for communicating with the letters REST endpoints

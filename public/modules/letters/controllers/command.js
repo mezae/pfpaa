@@ -1,8 +1,8 @@
 'use strict';
 /* global _: false */
 
-angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles',
-    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles) {
+angular.module('letters').controller('CommandController', ['$scope', '$q', '$window', '$timeout', '$interval', '$http', '$stateParams', '$location', '$modal', 'Authentication', 'Articles', 'Globals',
+    function($scope, $q, $window, $timeout, $interval, $http, $stateParams, $location, $modal, Authentication, Articles, Globals) {
         $scope.user = Authentication.user;
 
         if (!$scope.user) $location.path('/').replace();
@@ -17,13 +17,20 @@ angular.module('letters').controller('CommandController', ['$scope', '$q', '$win
         };
 
         $scope.find = function() {
-            $scope.partners = [{
-                username: 'Loading...',
-                role: 'user'
-            }];
-            
-            Articles.query(function(users) {
-                $scope.partners = users;
+            Globals.query(function(settings) {
+                var today = new Date();
+                var due_date = _.result(_.find(settings, function(global) {
+                                    return global.setting_name === 'due_date';
+                                }), 'setting_value');
+                due_date = new Date(due_date);
+                if (today < due_date || $scope.user.role === 'admin') {
+                    Articles.query(function(users) {
+                        $scope.partners = users;
+                    });
+                }
+                else {
+                    $location.path('/thanks').replace();
+                }
             });
         };
 

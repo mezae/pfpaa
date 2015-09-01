@@ -54,7 +54,7 @@
 		    <div class="col-md-2">
 		        <label for="formDOB" class="sr-only">Last Day</label>
 		        <p class="input-group">
-		          <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}" ng-model="user.due" ng-change="saveDueDate()" is-open="calendar.opened.due" datepicker-options="calendar.dateOptions" close-text="Close" placeholder="Due Date" show-button-bar="false"/>
+		          <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}" ng-model="new_global.setting_value" ng-change="saveDueDate()" is-open="calendar.opened.due" datepicker-options="calendar.dateOptions" close-text="Close" placeholder="Due Date" show-button-bar="false"/>
 		          <span class="input-group-btn">
 		            <button type="button" class="btn btn-upload" ng-click="calendar.open($event, 'due')"><i class="glyphicon glyphicon-calendar"></i></button>
 		          </span>
