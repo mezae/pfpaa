@@ -117,3 +117,18 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .welcome-mat {
+    font-size: 1.5em;
+  }
+}
+
+.alum-message {
+  background-color:rgba(243,243,243,0.3);
+}
+

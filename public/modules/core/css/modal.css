@@ -26,6 +26,12 @@
   }
 }
 
+@media screen and (max-width: 320px) {
+  .modal-dialog {
+    margin-bottom: 30px;
+  }
+}
+
 .edited > p {
   display: inline;
 }

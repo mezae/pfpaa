@@ -25,6 +25,10 @@
 			 <form name="candidateForm" ng-show="editCandidate" novalidate>
 				<fieldset>
 					<div class="form-group">
+						<label for="name" class="control-label">Name</label>
+						<input type="text" id="name" name="name" class="profile form-control" data-ng-model="candidate.prep_name" required>
+					</div>
+					<div class="form-group">
 						<label for="photo" class="control-label">Photo URL</label>
 						<input type="text" id="photo" name="photo" class="profile form-control" data-ng-model="candidate.photo" required>
 					</div>

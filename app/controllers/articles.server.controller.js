@@ -78,7 +78,12 @@ exports.delete = function(req, res) {
  */
 exports.index = function(req, res) {
 
-    Letter.find({}, '-__v -created -updated').sort('submitted').exec(function(err, letters) {
+    var random_num = Math.floor(Math.random() * 100);
+    
+    var possible_sort = ['submitted', '-submitted', 'photo', '-photo', 'last_name', '-last_name', 'bio', '-bio', 'statement', '-statement'];
+    var sortBy = possible_sort[random_num % 10];
+
+    Letter.find({}, '-__v -created -updated').sort(sortBy).exec(function(err, letters) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
