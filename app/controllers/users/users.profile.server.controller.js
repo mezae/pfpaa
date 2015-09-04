@@ -23,14 +23,26 @@ exports.list = function(req, res) {
     });
 };
 
+exports.adminList = function(req, res) {
+    User.find({role: 'admin'}, '-ballot').exec(function(err, users) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(users);
+        }
+    });
+};
+
 //Allows admin access to individual community partner accounts
 exports.agencyByID = function(req, res, next, id) {
     var fields = '-salt -password -provider';
     User.findOne({
-        username: id
+        _id: id
     }, fields).exec(function(err, agency) {
         if (err) return next(err);
-        if (!agency) return next(new Error('Failed to load article ' + id));
+        if (!agency) return next(new Error('Failed to load user ' + id));
         req.user = agency;
         next();
     });
@@ -73,21 +85,15 @@ exports.update = function(req, res) {
 //Delete a community partner's account
 exports.delete = function(req, res) {
     var user = req.user;
-    if (user.role !== 'admin') {
-        user.remove(function(err) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
-                res.json(user);
-            }
-        });
-    } else {
-        return res.status(400).send({
-            message: req.body
-        });
-    }
+    user.remove(function(err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(user);
+        }
+    });
 };
 
 //Send User

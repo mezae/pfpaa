@@ -41,7 +41,7 @@ exports.update = function(req, res) {
     var article = req.article;
 
     article = _.assign(article, req.body);
-    article.updated = article.name ? Date.now() : '';
+    article.updated = Date.now();
 
     article.save(function(err) {
         if (err) {
@@ -78,12 +78,7 @@ exports.delete = function(req, res) {
  */
 exports.index = function(req, res) {
 
-    var random_num = Math.floor(Math.random() * 100);
-    
-    var possible_sort = ['submitted', '-submitted', 'photo', '-photo', 'last_name', '-last_name', 'bio', '-bio', 'statement', '-statement'];
-    var sortBy = possible_sort[random_num % 10];
-
-    Letter.find({}, '-__v -created -updated').sort(sortBy).exec(function(err, letters) {
+    Letter.find({}, '-__v -created -updated').sort('_id').exec(function(err, letters) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)

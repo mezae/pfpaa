@@ -28,6 +28,9 @@ var UserSchema = new Schema({
         type: String,
         validate: [validateLocalStrategyPassword, 'Password should be longer']
     },
+    email: {
+        type: String
+    },
     ballot: {
         type: Array
     },

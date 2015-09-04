@@ -13,7 +13,6 @@
 				<table class="table table-stripes">
 					<thead>
 						<th>User</th>
-						<th>Name</th>
 						<th>Email</th>
 						<th>Role</th>
 					</thead>
@@ -21,7 +20,6 @@
 						<tr ng-repeat="admin in users" ng-if="admin.role !== 'user'" ng-click="removeAdmin(admin)" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
 							<td colspan="4" class="text-center" ng-if="hover && user.username !== admin.username && !addNewAdmin">click here to delete this account</div>
 							<td ng-if="(!hover || user.username === admin.username) || addNewAdmin" class="col-md-2">{{admin.username}}</td>
-							<td ng-if="!hover || user.username === admin.username || addNewAdmin" class="col-md-3">{{admin.contact}}</td>
 							<td ng-if="!hover || user.username === admin.username || addNewAdmin" class="col-md-3">{{admin.email}}</td>
 							<td ng-if="!hover || user.username === admin.username || addNewAdmin" class="col-md-2">{{admin.role}}</td>
 						</tr>
@@ -30,14 +28,11 @@
 								<input type="text" class="form-control profile" placeholder="username" ng-model="credentials.username">
 							</td>
 							<td>
-								<input type="text" class="form-control profile" placeholder="full name" ng-model="credentials.contact">
-							</td>
-							<td>
 								<input type="text" class="form-control profile" placeholder="email" ng-model="credentials.email"></td>
 							<td>
 								<select class="form-control" ng-model="credentials.role">
 									<option value="admin">admin</option>
-									<option value="volunteer">volunteer</option>
+									<option value="test">test</option>
 								</select>
 							</td>
 						</tr>

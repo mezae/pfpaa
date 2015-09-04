@@ -14,9 +14,15 @@ angular.module('letters').controller('ManageAdminsController', ['$scope', '$wind
                 type: '',
                 msg: ''
             };
-            $scope.users = Agencies.query({
-                role: 'admin'
-            });
+            $http.get('/agency/admin').success(function(response) {
+                $scope.users = response;
+            }).error(function(response) {
+                $scope.alert = {
+                    active: true,
+                    type: 'danger',
+                    msg: response.message
+                };
+            });    
         };
 
         //Allows admin to create new accounts
@@ -40,12 +46,13 @@ angular.module('letters').controller('ManageAdminsController', ['$scope', '$wind
                 var confirmation = $window.prompt('Type DELETE to remove ' + selected.username + '\'s account');
                 if (confirmation === 'DELETE') {
                     var oldAdmin = selected;
-                    selected.$remove(function() {
+                    $http.delete('/agency/' + selected._id).success(function(response) {
                         $scope.users.splice(_.findIndex($scope.users, oldAdmin), 1);
+                    }).error(function(response) {
+                        console.log(response);
                     });
                 }
             }
         };
-
     }
-]);
+    ]);
