@@ -854,7 +854,7 @@ angular.module('letters')
                 $scope.stats = {
                     total_ballots: submitted.length,
                     votes_per_ballot: (votes.length / submitted.length).toFixed(1),
-                    participation: (submitted.length / (users.length - 1)).toFixed(1)
+                    participation: ((submitted.length / (users.length - 1)) * 100).toFixed(1)
                 };
 
                 $scope.tally = [];

@@ -3,10 +3,14 @@
 	<div class="row">
 
 		<div class="col-md-12">
-			<h3>Manage Admin Users</h3>
+			<ol class="breadcrumb">
+				<li><a href="/#!/ballot"><i class="glyphicon glyphicon-home"></i></a></li>
+				<li><a href="/#!/admin/settings">Settings</a></li>
+				<li class="active">Admin Users</li>
+			</ol>
 		</div>
 
-		<div class="col-md-8">
+		<div class="col-md-8 col-md-offset-2">
 			<alert ng-if="alert.active" type="{{alert.type}}" ng-model="alert" close="alert.active = false"><i class="glyphicon glyphicon-warning-sign"></i> {{alert.msg}}</alert>
 
 			<div class="table-responsive">
@@ -38,7 +42,7 @@
 						</tr>
 						<tr>
 							<td ng-hide="addNewAdmin" colspan="4">
-								<button class="btn btn-upload" ng-click="addNewAdmin = true">Add New Users</button>
+								<button class="btn btn-upload center-block" ng-click="addNewAdmin = true">Add New User</button>
 							</td>
 							<td ng-show="addNewAdmin" colspan="4">
 								<button class="btn btn-cancel pull-left" ng-click="addNewAdmin = false">Cancel</button> 
