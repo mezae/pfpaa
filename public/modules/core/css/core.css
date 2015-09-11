@@ -170,3 +170,11 @@ body {-webkit-print-color-adjust: exact;}
 .btn-link {
   color: #6290C3;
 }
+
+footer a {
+  color: #d1d1d1;
+}
+
+footer a:hover {
+  text-decoration: none;
+}

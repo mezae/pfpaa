@@ -11,6 +11,39 @@
 
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
+
+			<div class="row">
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail statnail">
+						<div class="stattitle">
+							Votes per Ballot
+						</div>
+						<div class="statnum">
+							{{stats.votes_per_ballot}}
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail statnail">
+						<div class="stattitle">
+							Ballots Submitted
+						</div>
+						<div class="statnum">
+							{{stats.total_ballots}}
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail statnail">
+						<div class="stattitle">
+							Participation Rate
+						</div>
+						<div class="statnum">
+							{{stats.total_ballots}}%
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-stripes">
 					<thead>

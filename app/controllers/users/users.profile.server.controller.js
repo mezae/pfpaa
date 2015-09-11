@@ -12,7 +12,7 @@ var _ = require('lodash'),
 
 //Allows admin access to all submitted ballots
 exports.list = function(req, res) {
-    User.find({status: 1}, '-_id ballot').exec(function(err, users) {
+    User.find({}, '-_id status ballot').exec(function(err, users) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
