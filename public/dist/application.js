@@ -845,10 +845,8 @@ angular.module('letters')
         Articles.query(function(candidates) {
 
             Agencies.query(function(users) {
-                console.log(users);
 
                 var submitted = _.filter(users, {'status': 1});
-                
                 var ballots = _.pluck(submitted, 'ballot');
                 var votes = _.flatten(ballots);
                 var count = _.countBy(votes);
@@ -856,7 +854,7 @@ angular.module('letters')
                 $scope.stats = {
                     total_ballots: submitted.length,
                     votes_per_ballot: (votes.length / submitted.length).toFixed(1),
-                    participation: (submitted.length / users.length).toFixed(1)
+                    participation: (submitted.length / (users.length - 1)).toFixed(1)
                 };
 
                 $scope.tally = [];
