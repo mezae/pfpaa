@@ -4,6 +4,8 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', '$loc
     function($scope, $state, $location, $modal, Authentication) {
         $scope.authentication = Authentication;
 
+        $scope.councilReview = true;
+
         $scope.isAdmin = function() {
             return $scope.authentication.user.role === 'admin';
         };
